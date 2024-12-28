@@ -1,9 +1,11 @@
+print("Server version: v.1.2.0")
+
 import main
 import value
 import global_value as g
 # import time
 
-path = "/home/098-orin/" + "SCS"
+path = value.path
 
 file = open(path + "/fun.py", "br")
 fun_hash_old = hash(file.read())
