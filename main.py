@@ -1,4 +1,4 @@
-#this project is using https://github.com/TimMcCool/scratchattach
+# this project is using https://github.com/TimMcCool/scratchattach
 
 # main.py
 
