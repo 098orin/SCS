@@ -1,6 +1,6 @@
 import os
 
-print("Server version: v.1.2.0")
+print("Server version: v.1.2.1")
 
 if os.geteuid() == 0:
     print("管理者権限で実行中です")

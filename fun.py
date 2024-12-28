@@ -80,6 +80,27 @@ def responscloudvalues (repuest,id):
                 user = to_txt ( repuest[n][10:len(repuest[n])-2] )
                 Answer = ""
                 code = str(to_txt(repuest[n][2:8]))
+                for i in range(len(req)):
+                    if req[i] == "/":
+                        server_id = Answer
+                        Answer = ""
+                        break
+                    else:
+                        if i >= 2:
+                            Answer = Answer + req[i]
+                
+                if server_id != value.username and server_id != "all":
+                    print("400 Bad request")
+                    print("サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
+                    print("project id が正しい場合、プロジェクトに不備がある可能性があります。")
+                    print("プロジェクト側の@server_idが正しく自分の`value.py`のusernameと一致していることを確認してください。")
+                    print("===")
+                    Answer =str(user) + to_num("/" + "-1")
+                    print(Answer)
+                    print(to_txt(Answer))
+                    set_cloud(str(n), Answer)
+                
+
 
                 if code[0] != "1":
                     id = repuest[n][10:len(repuest[n])-2]
