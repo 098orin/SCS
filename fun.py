@@ -18,7 +18,7 @@ pdata = {}
 session = scratch3.login(value.username, value.password)
 
 # datadir = os.path.expanduser ("~").replace(os.sep,'/') + "/SCS_data"
-datadir = "/home/098-orin/" + "SCS_data"
+datadir = value.datadir
 
 tw_認証 = dict()
 watting = list()

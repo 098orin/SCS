@@ -13,11 +13,14 @@ git clone https://github.com/098orin/SCS.git
 username = your_username   // string
 password = your_password   // string
 path = "your_path" // string このrepositoryの絶対path
+datadir = "data_directory_path" // string "/SCS_data"の絶対パス
 project_id = [your_project_ids]   //型は指定しない。数字で普通にプロジェクトidを書いてください。
 project_client = [your_project_client]   // Scratchの場合は"sc", Turbowarpの場合は"tw"
 project_privilege = [project_privileges]   // 信頼できるprojectは"high", 普通のは"low"
 ```
 `project_なんたら`はそれぞれの一番目はすべて同じプロジェクトのことになるように全部リストの番号と内容を合わせてください。
+
+最初に`setup.py`を動かす必要があった気がしないでもないです。もし動かなかったらこれを実行してみてください。
 
 # Run
 実行にはpythonが必要です。それ以外は必要ありません。管理者権限があるとなお良いです。
