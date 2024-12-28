@@ -14,8 +14,7 @@ except:
     import scratchattach as scratch3
 
 def main(id):
-    session = scratch3.login(value.username, value.password)
-
+    # session = scratch3.login(value.username, value.password)
     # conn = session.connect_cloud(id)
     
     unix_time = time.time() - 946652400.0

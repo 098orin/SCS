@@ -1,20 +1,21 @@
 import os
 
-print("Server version: v.1.2.1")
+virsion = "1.2.2"
+print("Server version: v." + virsion)
 
-if os.geteuid() == 0:
-    print("管理者権限で実行中です")
-else:
-    print("非管理者権限で実行中です")
-
-
+try:
+    if os.geteuid() == 0:
+        print("管理者権限で実行中です")
+    else:
+        print("非管理者権限で実行中です")
+except Exception as error:
+        print(error)
 
 
 import main
 import value
 import global_value as g
 # import time
-
 
 path = value.path
 
@@ -37,7 +38,8 @@ while True:
         # time.sleep(0.05)
 
 
-    if 1 == 50:
+    if i == 50:
+        i = 0
         try:
 
             with open(path + "/fun.py", "br") as file:
