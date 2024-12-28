@@ -1,9 +1,20 @@
+import os
+
 print("Server version: v.1.2.0")
+
+if os.geteuid() == 0:
+    print("管理者権限で実行中です")
+else:
+    print("非管理者権限で実行中です")
+
+
+
 
 import main
 import value
 import global_value as g
 # import time
+
 
 path = value.path
 
