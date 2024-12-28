@@ -16,7 +16,7 @@ except:
 def main(id):
     session = scratch3.login(value.username, value.password)
 
-    conn = session.connect_cloud(id)
+    # conn = session.connect_cloud(id)
     
     unix_time = time.time() - 946652400.0
     unix_time = unix_time/3600/24
