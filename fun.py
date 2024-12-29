@@ -51,7 +51,6 @@ def to_num(intxt):
 
 
 def getcloudvalues(id):
-    conn = session.connect_cloud(value.project_id[g.i2])
     if value.project_client[g.i2] == "sc":
         request = scratch3.get_cloud(id) #Returns a dict with all cloud var values
         del request['time']
