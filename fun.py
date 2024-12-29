@@ -1,4 +1,4 @@
-from email.policy import default
+# from email.policy import default
 import value
 import global_value as g
 import json

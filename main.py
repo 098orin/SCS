@@ -20,7 +20,7 @@ def main(id):
     unix_time = time.time() - 946652400.0
     unix_time = unix_time/3600/24
     unix_time = unix_time-1.0
-    print("Time stamp:", unix_time)
+    # print("Time stamp:", unix_time)
     fun.set_cloud("time", unix_time) #the variable name is specified without the cloud emoji
     print(id)
     fun.responscloudvalues (fun.getcloudvalues(id) , id)

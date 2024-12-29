@@ -39,5 +39,10 @@ sudo python _server.py
 ```
 のほうが好ましいです。権限Ｅｒｒｏｒで動かないかもしれません。もし動かなかったら教えてください。
 
+# Scratch
+Scarcth側のdocumentは
+https://ja.scratch-wiki.info/wiki/%E5%88%A9%E7%94%A8%E8%80%85:Mario-098/ScratchCloudSystem
+を参照してください。
+
 # 今後の更新予定（TODO）
 * 通信暗号化（password）

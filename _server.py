@@ -32,7 +32,7 @@ if response.status_code == 200: # ステータスコードを確認
                 print(f"Error: error")
     else:
         print("更新はありません。")
-        
+
 else:
     print(f"Error: {response.status_code}")
 
@@ -63,6 +63,9 @@ while True:
             main.main(value.project_id[g.i2])
         except Exception as error:
             print(error)
+            if error.args[0] == "[Errno 11001] getaddrinfo failed":
+                print("Scratch server がダウンしている可能性が高いです。")
+                # print("このエラーを表示したくない場合は")
         # time.sleep(0.05)
 
 
