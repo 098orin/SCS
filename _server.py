@@ -1,7 +1,8 @@
 import os
+import requests
 
-virsion = "1.2.2"
-print("Server version: v." + virsion)
+version = "1.2.2"
+print("Server version: v." + version)
 
 try:
     if os.geteuid() == 0:
@@ -11,6 +12,31 @@ try:
 except Exception as error:
         print(error)
 
+print("更新を確認...")
+url = "https://raw.githubusercontent.com/098orin/SCS/main/README.md"
+response = requests.get(url)
+
+if response.status_code == 200: # ステータスコードを確認
+    f_line = response.text.splitlines()[0]
+    now_version = f_line[10:len(f_line)]
+    if now_version != version:
+
+        print("新しいバージョンがあります: v." + now_version)
+        print("新しいバージョンをインストールしますか?(y/n)")
+        an = input()
+        if an.lower() == "y":
+            try:
+                os.system("git pull")
+                print("プログラムを更新しました。")
+            except Exception as error:
+                print(f"Error: error")
+    else:
+        print("更新はありません。")
+        
+else:
+    print(f"Error: {response.status_code}")
+
+print("サーバーを起動中...")
 
 import main
 import value
@@ -28,6 +54,8 @@ val_hash_old = hash(file.read())
 file.close()
 
 i = 1
+print("Done!")
+
 while True:
     i += 1
     for g.i2 in range(len(value.project_id)):
