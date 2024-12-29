@@ -328,6 +328,7 @@ def set_cloud (n,num:int):
     if value.project_client[g.i2] == "sc":
         conn = session.connect_cloud(value.project_id[g.i2])
     elif value.project_client[g.i2] == "tw":
+        msg ="SCS project server by" + value.username + " on Scratch"
         conn = session.connect_tw_cloud(value.project_id[g.i2], contact="@Mario-098 on Scratch")
     conn.set_var(n,int(num))
 
