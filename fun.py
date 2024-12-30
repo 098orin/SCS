@@ -25,20 +25,24 @@ tw_認証 = dict()
 watting = list()
 
 def to_txt(number):
-    number = str(number)
-    if number == "" or len(number)%2 == 1:
-        return " "
-    Answer = ""
-    txt = "/#0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_+.\\"
-    num = ""
-    for i in range(len(str(number))):
+    try:
+        number = str(number)
+        if number == "" or len(number)%2 == 1:
+            return " "
+        Answer = ""
+        txt = "/#0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_+.\\"
+        num = ""
+        for i in range(len(str(number))):
 
-        if i%2 != 0:
-            num = str(num) + str(number[i])
-            Answer = Answer + str(txt[int(num)-10])
-        else:
-            num = int(number[i])
-    return Answer
+            if i%2 != 0:
+                num = str(num) + str(number[i])
+                Answer = Answer + str(txt[int(num)-10])
+            else:
+                num = int(number[i])
+        return Answer
+    except Exception as error:
+        print("In to_txt():" + error)
+        return number
 
 def to_num(intxt):
     Answer = ""
@@ -81,6 +85,7 @@ def responscloudvalues (repuest,id):
             n = str(n)
             if str(repuest[n]) != "60353425": #not None
                 req = to_txt ( repuest[n])
+                Answer = ""
                 for i in range(len(req)):
                     if req[i] == "/":
                         server_id = Answer
@@ -91,7 +96,6 @@ def responscloudvalues (repuest,id):
                         if i >= 2:
                             Answer = Answer + req[i]
                 user = req[f_i:len(req)-1]
-                Answer = ""
                 code = str(to_txt(repuest[n][2:8]))
                 
                 if server_id != value.username and server_id != "all":
@@ -100,10 +104,11 @@ def responscloudvalues (repuest,id):
                     print("project id が正しい場合、プロジェクトに不備がある可能性があります。")
                     print("プロジェクト側の@server_idが正しく自分の`value.py`のusernameと一致していることを確認してください。")
                     print("===")
-                    Answer =str(user) + to_num("/" + "-1")
+                    Answer = str(user) + to_num("/" + "-1")
+                    print(server_id)
                     print(Answer)
                     print(code)
-                    print(to_txt(Answer))
+                    print(user)
                     set_cloud(str(n), Answer)
                 
 
