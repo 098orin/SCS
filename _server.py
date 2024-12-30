@@ -1,7 +1,7 @@
 import os
 import requests
 
-version = "1.2.2"
+version = "1.2.2-test0.1"
 print("Server version: v." + version)
 
 try:
