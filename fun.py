@@ -87,14 +87,15 @@ def responscloudvalues (repuest,id):
                 req = to_txt ( repuest[n])
                 Answer = ""
                 for i in range(len(req)):
-                    if req[i] == "/":
+                    if req[i] == "/" and Answer != "":
                         server_id = Answer
                         Answer = ""
                         f_i = i
                         break
                     else:
-                        if i >= 2:
+                        if i >= 4:
                             Answer = Answer + req[i]
+
                 user = req[f_i:len(req)-1]
                 code = str(to_txt(repuest[n][2:8]))
                 
@@ -105,6 +106,7 @@ def responscloudvalues (repuest,id):
                     print("プロジェクト側の@server_idが正しく自分の`value.py`のusernameと一致していることを確認してください。")
                     print("===")
                     Answer = str(user) + to_num("/" + "-1")
+                    print(req)
                     print(server_id)
                     print(Answer)
                     print(code)
