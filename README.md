@@ -1,4 +1,4 @@
-version v.1.2.2  advh
+version v.1.2.2  fun2
 # SCS (Sratch Cloud System)
 これはscratch projectと外部での通信を可能にするためのサーバープログラムです。
 
