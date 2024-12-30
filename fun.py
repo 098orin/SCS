@@ -8,8 +8,9 @@ import os
 try:
     import scratchattach as scratch3
 except:
-    os.system("pip install -U scratchattach")
+    os.system("pip install -U scratchattach==1.4.7")
     import scratchattach as scratch3
+print(scratch3.__version__)
 
 global i2
 
