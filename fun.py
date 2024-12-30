@@ -81,17 +81,18 @@ def responscloudvalues (repuest,id):
             n = str(n)
             if str(repuest[n]) != "60353425": #not None
                 req = to_txt ( repuest[n])
-                user = to_txt ( repuest[n][10:len(repuest[n])-2] )
-                Answer = ""
-                code = str(to_txt(repuest[n][2:8]))
                 for i in range(len(req)):
                     if req[i] == "/":
                         server_id = Answer
                         Answer = ""
+                        f_i = i
                         break
                     else:
                         if i >= 2:
                             Answer = Answer + req[i]
+                user = req[f_i:len(req)-1]
+                Answer = ""
+                code = str(to_txt(repuest[n][2:8]))
                 
                 if server_id != value.username and server_id != "all":
                     print("400 Bad request")
@@ -101,6 +102,7 @@ def responscloudvalues (repuest,id):
                     print("===")
                     Answer =str(user) + to_num("/" + "-1")
                     print(Answer)
+                    print(code)
                     print(to_txt(Answer))
                     set_cloud(str(n), Answer)
                 
