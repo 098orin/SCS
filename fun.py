@@ -8,7 +8,7 @@ import os
 try:
     import scratchattach as scratch3
 except:
-    os.system("pip install -U scratchattach==1.4.7")
+    os.system("pip install -U scratchattach")
     import scratchattach as scratch3
 print(os.system("pip show scratchattach"))
 
@@ -25,6 +25,7 @@ tw_認証 = dict()
 watting = list()
 
 def to_txt(number):
+    number = str(number)
     if number == "" or len(number)%2 == 1:
         return " "
     Answer = ""
@@ -56,7 +57,8 @@ def getcloudvalues(id):
         request = scratch3.get_cloud(id) #Returns a dict with all cloud var values
         del request['time']
     elif value.project_client[g.i2] == "tw":
-        request = scratch3.get_tw_cloud(id)
+        request = scratch3.get_tw_cloud(id).get_all_vars() #Returns a dict with all cloud var values
+        """
         TS1 = "{"
         for i in range(len(request)):
             TS = request[i]
@@ -66,7 +68,9 @@ def getcloudvalues(id):
                     TS = TS + ", "
                 TS1 = TS1 + TS
         TS1 = TS1 + "}"
-        request = json.loads(TS1)
+        """
+        # request = json.loads(request)
+        del request['time']
     
     return request
 
@@ -329,7 +333,7 @@ def set_cloud (n,num:int):
         conn = session.connect_cloud(value.project_id[g.i2])
     elif value.project_client[g.i2] == "tw":
         msg ="SCS project server by" + value.username + " on Scratch"
-        conn = session.connect_tw_cloud(value.project_id[g.i2], contact=msg)
+        conn = scratch3.get_tw_cloud(value.project_id[g.i2], contact=msg)
     conn.set_var(n,int(num))
 
 
