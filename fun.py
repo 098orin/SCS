@@ -84,20 +84,11 @@ def responscloudvalues (repuest,id):
         for n in list(repuest):
             n = str(n)
             if str(repuest[n]) != "60353425": #not None
-                req = to_txt ( repuest[n])
-                Answer = ""
-                for i in range(len(req)):
-                    if req[i] == "/" and Answer != "":
-                        server_id = Answer
-                        Answer = ""
-                        f_i = i
-                        break
-                    else:
-                        if i >= 4:
-                            Answer = Answer + req[i]
-
-                user = req[f_i:len(req)-1]
-                code = str(to_txt(repuest[n][2:8]))
+                # 未実装
+                server_id = ""
+                req = ""
+                code = ""
+                user = ""
                 
                 if server_id != value.username and server_id != "all":
                     print("400 Bad request")
@@ -113,30 +104,6 @@ def responscloudvalues (repuest,id):
                     print(user)
                     set_cloud(str(n), Answer)
                 
-
-
-                if code[0] != "1":
-                    id = repuest[n][10:len(repuest[n])-2]
-
-                if str(to_txt(repuest[n][0:2])) == "#":
-                    #have datas
-                    datas = ["","","","","","",]
-                    i1 = 0
-                    data = ""
-                    for i in range(len(req)-8):
-                        i = i + 5
-                        if "/" == req[i]:
-                            if i1 == 0:
-                                if code[0] != 1:
-                                    id = data
-                                else:
-                                    user = data
-                            else:
-                                datas[i1-1] = data
-                            i1 = i1 + 1
-                            data = ""
-                        data = data + str(req[i])
-
                 if code[0] == "1":
                     # no id
                     print('no id')
@@ -150,10 +117,8 @@ def responscloudvalues (repuest,id):
                                 # <class '_io.TextIOWrapper'>
                         else:
                             file = "0"
-                        Answer =str(user) + to_num("/" + str(file))
-                        print(Answer)
-                        print(to_txt(Answer))
-                        set_cloud(str(n), Answer)
+
+                        # 未実装
 
                     elif code[2] == "1":
                         # make id
@@ -163,25 +128,10 @@ def responscloudvalues (repuest,id):
                         path = datadir + "/id/" + str(user) + ".txt"
                         print(path)
                         if not os.path.isfile(path):
-                            path = datadir + "/id/"
-                            id = sum(os.path.isfile(os.path.join(path, name)) for name in os.listdir(path))
-                            id = id + 1
-                            print(sum(os.path.isfile(os.path.join(path, name)) for name in os.listdir(path)))
-                            path = path + str(user) + ".txt"
-                            with open(path, mode='w') as file:
-                                file.write(str(id))
+                            pass # 未実装
                         path = datadir + "/about/" + str(id) + "/about.txt"
-                        if not os.path.exists(os.path.dirname(path)):
-                            os.makedirs(os.path.dirname(path))
-                        print(path)
-                        if not os.path.isfile(path):
-                            with open(path, mode='w', newline="\n") as file:
-                                file.write( "1\n" + "100" )
-                            Answer = str(user) + to_num("/")
-                        set_cloud(str(n), Answer)
-                        print(Answer)
-                    elif code[2] == "2":
-                        Answer = user + to_num("/0")
+                        # 未実装
+
                         if value.project_client[g.i2] == "tw":
                             print("認証")
                             if tw_認証.get(str(user)) == 1:
@@ -229,31 +179,24 @@ def responscloudvalues (repuest,id):
                     print ("global file")
                     if code[2] == "0":
                         print("look file")
-                        path = datadir + "/global/" + datas[0]
-                        with open(path, mode="r", newline='\n') as file:
-                            file = file.readlines()
-                        Answer = id + to_num("/" + str(file))
-                        set_cloud(str(n), Answer)
+
+                        # 未実装
 
                     elif code[2] == "1":
                         print("== file ? (bool)")
-                        path = datadir + "/global/" + datas[0]
-                        with open(path, mode="r", newline='\n') as file:
-                            file = file.readlines()
-                        if datas[1] == str(file):
-                            Answer = id + to_num("/" + 1)
-                        else:
-                            Answer = id + to_num("/" + 0)
-                        set_cloud(str(n), Answer)
+
+                        # 未実装
 
                     elif code[2] == "2":
                         print("count files")
-                        path = datadir + data[0]
+                        path = datadir + ""
                         Answer = id + to_num( "/" + sum(os.path.isfile(os.path.join(path, name)) for name in os.listdir(path)) )
-                        set_cloud(str(n), Answer)
+                        # 未実装
 
                     elif code[2] == "3":
                         print("list files")
+
+                        # 未実装
 
 
                 
@@ -261,26 +204,19 @@ def responscloudvalues (repuest,id):
                     print("projects file")
                     if code[2] == "0":
                         print("look file")
-                        path = datadir + "/projects/" + datas[0]
-                        with open(path, mode="r", newline='\n') as file:
-                            file = file.readlines()
-                        Answer = id + to_num("/" + str(file))
-                        set_cloud(str(n), Answer)
+
+                        # 未実装
 
                     elif code[2] == "1":
                         print("== file ? (bool)")
-                        path = datadir + "/projects/" + datas[0]
-                        with open(path, mode="r", newline='\n') as file:
-                            file = file.readlines()
-                        if datas[1] == str(file):
-                            Answer = str(id) + to_num("/" + 1)
-                        else:
-                            Answer = str(id) + to_num("/" + 0)
-                        set_cloud(str(n), Answer)
+
+                        # 未実装
                 
                 elif code[0] == "5":
                     if code[2] == "0":
                         print ("mkdir")
+
+                        # 未実装
                     
                     elif code[2] == "1":
                         print("to do")
