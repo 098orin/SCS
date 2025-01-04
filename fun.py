@@ -78,198 +78,214 @@ def getcloudvalues(id):
     
     return request
 
-def responscloudvalues (repuest,id):
+def response_cloudvalues (repuest,id):
     print(repuest)
     if repuest:
+        i = 0
         for n in list(repuest):
-            n = str(n)
-            if str(repuest[n]) != "60353425": #not None
+            i += 1
+            set_cloud(i, response(n))
+                            
+def response(request):
+    request = str(request)
+    if request != "0": #not None
+        code = request[0:3]
+        req = to_txt(request[3:len(request)])
+
+        user = ""
+        for i in range(len(req)):
+            if req[i] == "/":
+                break
+            user = user + req[i]
+        
+        server_id = ""
+        for i in range(len(req)): 
+            i = len(req) - i
+            i -= 1
+            if req[i] == "/":
+                break
+            server_id = req[i] + server_id
+
+        if server_id != value.username and server_id != "all":
+            print("400 Bad request")
+            print("サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
+            print("project id が正しい場合、プロジェクトに不備がある可能性があります。")
+            print("プロジェクト側の@server_idが正しく自分の`value.py`のusernameと一致していることを確認してください。")
+            print("===")
+            Answer = str(user) + to_num("/" + "-1")
+            print(req)
+            print(server_id)
+            print(Answer)
+            print(code)
+            print(user)
+            return Answer
+                
+        if code[0] == "1":
+            # no id
+            print('no id')
+            if code[2] == "0":
+                path = datadir + "/id/" + str(user) + ".txt"
+                print(path)
+                if os.path.isfile(path):
+                    with open(path) as file:
+                        file = file.read()
+                        print(file)
+                        # <class '_io.TextIOWrapper'>
+                else:
+                    file = "0"
+
                 # 未実装
-                server_id = ""
-                req = ""
-                code = ""
-                user = ""
-                
-                if server_id != value.username and server_id != "all":
-                    print("400 Bad request")
-                    print("サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
-                    print("project id が正しい場合、プロジェクトに不備がある可能性があります。")
-                    print("プロジェクト側の@server_idが正しく自分の`value.py`のusernameと一致していることを確認してください。")
-                    print("===")
-                    Answer = str(user) + to_num("/" + "-1")
-                    print(req)
-                    print(server_id)
-                    print(Answer)
-                    print(code)
-                    print(user)
-                    set_cloud(str(n), Answer)
-                
-                if code[0] == "1":
-                    # no id
-                    print('no id')
-                    if code[2] == "0":
-                        path = datadir + "/id/" + str(user) + ".txt"
-                        print(path)
-                        if os.path.isfile(path):
-                            with open(path) as file:
-                                file = file.read()
-                                print(file)
-                                # <class '_io.TextIOWrapper'>
-                        else:
-                            file = "0"
 
-                        # 未実装
+            elif code[2] == "1":
+                # make id
+                if value.project_privilege[g.i2] != "high":
+                    pass
+                    #continue
+                print ("make id") 
+                path = datadir + "/id/" + str(user) + ".txt"
+                print(path)
+                if not os.path.isfile(path):
+                    pass # 未実装
+                path = datadir + "/about/" + str(id) + "/about.txt"
+                # 未実装
 
-                    elif code[2] == "1":
-                        # make id
-                        if value.project_privilege[g.i2] != "high":
-                            continue
-                        print ("make id") 
-                        path = datadir + "/id/" + str(user) + ".txt"
-                        print(path)
-                        if not os.path.isfile(path):
-                            pass # 未実装
-                        path = datadir + "/about/" + str(id) + "/about.txt"
-                        # 未実装
+                if value.project_client[g.i2] == "tw":
+                    print("認証")
+                    if tw_認証.get(str(user)) == 1:
+                        Answer = user + to_num("/1")
+                        print (1)
+                        del tw_認証[str(user)]
+                        print (0)
+                return Answer
 
-                        if value.project_client[g.i2] == "tw":
-                            print("認証")
-                            if tw_認証.get(str(user)) == 1:
-                                Answer = user + to_num("/1")
-                                print (1)
-                                del tw_認証[str(user)]
-                                print (0)
-                        set_cloud(str(n), Answer)
-
-                    elif code[2] == "3":
-                        print("認証")
-                        if value.project_client[g.i2] == "sc":
-                            tw_認証[str(user)] = 1
-                        Answer = user + to_num("/0")
-                        set_cloud(str(n), Answer)
+            elif code[2] == "3":
+                print("認証")
+                if value.project_client[g.i2] == "sc":
+                    tw_認証[str(user)] = 1
+                Answer = user + to_num("/0")
+                return Answer
                             
-                elif code[0] == "2":
-                    # have id
-                    print("have id")
-                    id = repuest[n][10:len(repuest[n])-2]
-                    if code[2] == "0":
-                        path = datadir + "/about/" + to_txt(id) + "/about.txt"
-                        with open(path, mode='r', newline='\n') as file:
-                            file = file.readlines()
-                            file = file[0].rstrip()  # 1行目を取得
-                        print(file)
-                        Answer = id + to_num("/" + str(file))
-                        print(Answer)
-                        set_cloud(str(n), Answer)
+        elif code[0] == "2":
+            # have id
+            print("have id")
+            id = ""
+            # 未実装
+            if code[2] == "0":
+                path = datadir + "/about/" + to_txt(id) + "/about.txt"
+                with open(path, mode='r', newline='\n') as file:
+                    file = file.readlines()
+                    file = file[0].rstrip()  # 1行目を取得
+                print(file)
+                Answer = id + to_num("/" + str(file))
+                print(Answer)
+                return Answer
                         
-                    elif code[2] == "1":
-                        path = datadir + "/about/" + to_txt(id) + "/about.txt"
-                        with open(path, mode='r', newline='\n') as file:
-                            file = file.readlines()
-                            file = file[1].rstrip()  # 2行目を取得
-                        print(file)
-                        Answer = id + to_num("/" + str(file))
-                        print(Answer)
-                        set_cloud(str(n), Answer)
-                    elif code[2] == "2":
-                        # TO DO
-                        print("TO DO")
+            elif code[2] == "1":
+                path = datadir + "/about/" + to_txt(id) + "/about.txt"
+                with open(path, mode='r', newline='\n') as file:
+                    file = file.readlines()
+                    file = file[1].rstrip()  # 2行目を取得
+                print(file)
+                Answer = id + to_num("/" + str(file))
+                print(Answer)
+                return Answer
+            elif code[2] == "2":
+                # TO DO
+                print("TO DO")
 
-                elif code[0] == "3":
-                    print ("global file")
-                    if code[2] == "0":
-                        print("look file")
 
-                        # 未実装
+        elif code[0] == "3":
+            print ("global file")
+            if code[2] == "0":
+                print("look file")
 
-                    elif code[2] == "1":
-                        print("== file ? (bool)")
+                # 未実装
 
-                        # 未実装
+            elif code[2] == "1":
+                print("== file ? (bool)")
 
-                    elif code[2] == "2":
-                        print("count files")
-                        path = datadir + ""
-                        Answer = id + to_num( "/" + sum(os.path.isfile(os.path.join(path, name)) for name in os.listdir(path)) )
-                        # 未実装
+                # 未実装
+            elif code[2] == "2":
+                print("count files")
+                path = datadir + ""
+                Answer = id + to_num( "/" + sum(os.path.isfile(os.path.join(path, name)) for name in os.listdir(path)) )
+                # 未実装
 
-                    elif code[2] == "3":
-                        print("list files")
+            elif code[2] == "3":
+                print("list files")
 
-                        # 未実装
+                # 未実装
 
 
                 
-                elif code[0] == "4":
-                    print("projects file")
-                    if code[2] == "0":
-                        print("look file")
+        elif code[0] == "4":
+            print("projects file")
+            if code[2] == "0":
+                print("look file")
 
-                        # 未実装
+                # 未実装
 
-                    elif code[2] == "1":
-                        print("== file ? (bool)")
+            elif code[2] == "1":
+                print("== file ? (bool)")
 
-                        # 未実装
+                # 未実装
                 
-                elif code[0] == "5":
-                    if code[2] == "0":
-                        print ("mkdir")
+        elif code[0] == "5":
+            if code[2] == "0":
+                print ("mkdir")
 
-                        # 未実装
+                # 未実装
                     
-                    elif code[2] == "1":
-                        print("to do")
+            elif code[2] == "1":
+                print("to do")
 
-                elif code[0] == "6":
-                    print("point")
-                    if code[2] == "0":
-                        print("get log-in point")
-                        if value.project_privilege[g.i2] != "high":
-                            continue
-                        try:
-                            f = open(datadir + "/about/" + to_txt(id) + "/login.txt", "r")
-                            logintime = float(f.readline())
-                            f.close()
-                        except Exception as error:
-                            print(error)
-                            try:
-                                print("新規作成")
-                                logintime = 0.0
-                                file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "x")
-                                file.write("0")
-                                file.close()
-                            except FileExistsError:
-                                print("fileの内容を修正")
-                                file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "w")
-                                file.write("0")
-                                file.close()
+        elif code[0] == "6":
+            print("point")
+            if code[2] == "0":
+                print("get log-in point")
+                if value.project_privilege[g.i2] != "high":
+                    pass
+                    #continue
+                try:
+                    f = open(datadir + "/about/" + to_txt(id) + "/login.txt", "r")
+                    logintime = float(f.readline())
+                    f.close()
+                except Exception as error:
+                    print(error)
+                    try:
+                        print("新規作成")
+                        logintime = 0.0
+                        file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "x")
+                        file.write("0")
+                        file.close()
+                    except FileExistsError:
+                        print("fileの内容を修正")
+                        file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "w")
+                        file.write("0")
+                        file.close()
 
-                        if time.time()/86400 - logintime >= 1.0:
-                            print("ログインポイントを更新")
-                            path = datadir + "/about/" + to_txt(id) + "/about.txt"
-                            with open(path, mode='r', newline='\n') as file:
-                                file = file.readlines()
-                                print(file)
-                                file2 = file[1].rstrip()  # 2行目を取得
-                            print(file2)
-                            Answer = id + to_num("/" + str(float(file2) + 3.0))
+                if time.time()/86400 - logintime >= 1.0:
+                    print("ログインポイントを更新")
+                    path = datadir + "/about/" + to_txt(id) + "/about.txt"
+                    with open(path, mode='r', newline='\n') as file:
+                        file = file.readlines()
+                        print(file)
+                        file2 = file[1].rstrip()  # 2行目を取得
+                    print(file2)
+                    Answer = id + to_num("/" + str(float(file2) + 3.0))
 
-                            f = open(path, "w")
-                            f.write(str(file[0].rstrip()) + "\n" + str(float(file2) + 3.0) )
-                            f.close
+                    f = open(path, "w")
+                    f.write(str(file[0].rstrip()) + "\n" + str(float(file2) + 3.0) )
+                    f.close
 
-                            print("上書き")
-                            file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "w")
-                            file.write(str(time.time()/86400))
-                            file.close()
-                        else:
-                            Answer = id + to_num("/" + "-1")
-
-                        print(Answer)
-                        set_cloud(str(n), Answer)
-                            
-
+                    print("上書き")
+                    file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "w")
+                    file.write(str(time.time()/86400))
+                    file.close()
+                else:
+                    Answer = id + to_num("/" + "-1")
+                print(Answer)
+                return Answer
 
 
 def set_cloud (n,num:int):
