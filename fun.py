@@ -147,11 +147,11 @@ def response(request):
                     Answer = to_num(user + "/-1")
                 else:
                     id = count_files(datadir + "/id/") + 1
-                    make_file(path, id)
+                    write_file(path, id)
                     path = datadir + "/about/" + str(id) + "/about.txt"
                     print(path)
                     content = "1\n100"
-                    make_file(path, content)
+                    write_file(path, content)
                     Answer = to_num(user + "/" + str(id))
 
 
@@ -309,7 +309,7 @@ def count_files(path):
         print("指定したパスが見つかりません。")
         return 0
 
-def make_file(path, txt):
+def write_file(path, txt):
     # 指定したパスにテキストファイルを作成して内容を書き込む
     txt = str(txt)
     # ディレクトリが存在しない場合は作成する
