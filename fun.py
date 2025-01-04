@@ -114,11 +114,8 @@ def response(request):
             print("===")
             Answer = str(user) + to_num("/" + "-1")
             print(req)
-            print(server_id)
-            print(Answer)
             print(code)
             print(user)
-            return Answer
                 
         if code[0] == "1":
             # no id
@@ -138,17 +135,28 @@ def response(request):
 
             elif code[2] == "1":
                 # make id
-                if value.project_privilege[g.i2] != "high":
-                    pass
-                    #continue
                 print ("make id") 
+                if value.project_privilege[g.i2] != "high":
+                    print("Error: projectに十分な権限がありません")
+                    Answer = to_num(user + "/-1")
+                    print(Answer)
+                    return Answer
                 path = datadir + "/id/" + str(user) + ".txt"
                 print(path)
-                if not os.path.isfile(path):
-                    pass # 未実装
-                path = datadir + "/about/" + str(id) + "/about.txt"
-                # 未実装
+                if os.path.isfile(path):
+                    Answer = to_num(user + "/-1")
+                else:
+                    id = count_files(datadir + "/id/") + 1
+                    make_file(path, id)
+                    path = datadir + "/about/" + str(id) + "/about.txt"
+                    print(path)
+                    content = "1\n100"
+                    make_file(path, content)
+                    Answer = to_num(user + "/" + str(id))
 
+
+            elif code[2] == "2":
+                # 認証
                 if value.project_client[g.i2] == "tw":
                     print("認証")
                     if tw_認証.get(str(user)) == 1:
@@ -156,15 +164,14 @@ def response(request):
                         print (1)
                         del tw_認証[str(user)]
                         print (0)
-                return Answer
 
             elif code[2] == "3":
                 print("認証")
                 if value.project_client[g.i2] == "sc":
                     tw_認証[str(user)] = 1
                 Answer = user + to_num("/0")
-                return Answer
-                            
+
+                         
         elif code[0] == "2":
             # have id
             print("have id")
@@ -177,8 +184,6 @@ def response(request):
                     file = file[0].rstrip()  # 1行目を取得
                 print(file)
                 Answer = id + to_num("/" + str(file))
-                print(Answer)
-                return Answer
                         
             elif code[2] == "1":
                 path = datadir + "/about/" + to_txt(id) + "/about.txt"
@@ -187,8 +192,6 @@ def response(request):
                     file = file[1].rstrip()  # 2行目を取得
                 print(file)
                 Answer = id + to_num("/" + str(file))
-                print(Answer)
-                return Answer
             elif code[2] == "2":
                 # TO DO
                 print("TO DO")
@@ -284,8 +287,8 @@ def response(request):
                     file.close()
                 else:
                     Answer = id + to_num("/" + "-1")
-                print(Answer)
-                return Answer
+        print(Answer)
+        return Answer
 
 
 def set_cloud (n,num:int):
@@ -297,6 +300,26 @@ def set_cloud (n,num:int):
         conn = scratch3.get_tw_cloud(value.project_id[g.i2], contact=msg)
     conn.set_var(n,int(num))
 
+def count_files(path):
+    # ディレクトリ内のファイルをカウントする
+    try:
+        files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+        return len(files)
+    except FileNotFoundError:
+        print("指定したパスが見つかりません。")
+        return 0
+
+def make_file(path, txt):
+    # 指定したパスにテキストファイルを作成して内容を書き込む
+    txt = str(txt)
+    # ディレクトリが存在しない場合は作成する
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    try:
+        with open(path, 'w') as file:
+            file.write(txt)
+        print(f"{path} にファイルを作成")
+    except Exception as e:
+        print(f"Error: {e}")
 
 def lock_txt(txt,password):
     s_box = _s_box(password)
