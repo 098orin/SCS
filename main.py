@@ -23,4 +23,4 @@ def main(id):
     # print("Time stamp:", unix_time)
     fun.set_cloud("time", unix_time) #the variable name is specified without the cloud emoji
     print(id)
-    fun.responscloudvalues (fun.getcloudvalues(id) , id)
+    fun.response_cloudvalues (fun.getcloudvalues(id) , id)
