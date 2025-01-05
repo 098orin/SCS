@@ -122,16 +122,9 @@ def response(request):
             print('no id')
             if code[2] == "0":
                 path = datadir + "/id/" + str(user) + ".txt"
-                print(path)
-                if os.path.isfile(path):
-                    with open(path) as file:
-                        file = file.read()
-                        print(file)
-                        # <class '_io.TextIOWrapper'>
-                else:
-                    file = "0"
-
-                # 未実装
+                id = read_file(path)
+                if id == None:
+                    pass
 
             elif code[2] == "1":
                 # make id
@@ -169,29 +162,33 @@ def response(request):
                 print("認証")
                 if value.project_client[g.i2] == "sc":
                     tw_認証[str(user)] = 1
-                Answer = user + to_num("/0")
+                    Answer = to_num(user + "/-1")
+                else:
+                    Answer = to_num(user + "/-1")
 
                          
         elif code[0] == "2":
             # have id
             print("have id")
-            id = ""
+            id = str(user)
             # 未実装
             if code[2] == "0":
-                path = datadir + "/about/" + to_txt(id) + "/about.txt"
-                with open(path, mode='r', newline='\n') as file:
-                    file = file.readlines()
-                    file = file[0].rstrip()  # 1行目を取得
-                print(file)
-                Answer = id + to_num("/" + str(file))
+                print("get status")
+                path = datadir + "/about/" + id + "/about.txt"
+                file = str(read_file_lines(path)[0])
+                if file == None:
+                    Answer = to_num(id + "/-0")
+                else:
+                    Answer = to_num(id + "/" + file)
                         
             elif code[2] == "1":
-                path = datadir + "/about/" + to_txt(id) + "/about.txt"
-                with open(path, mode='r', newline='\n') as file:
-                    file = file.readlines()
-                    file = file[1].rstrip()  # 2行目を取得
-                print(file)
-                Answer = id + to_num("/" + str(file))
+                print("get point")
+                path = datadir + "/about/" + id + "/about.txt"
+                file = str(read_file_lines(path)[1])
+                if file == None:
+                    Answer = to_num(id + "/-0")
+                else:
+                    Answer = to_num(id + "/" + file)
             elif code[2] == "2":
                 # TO DO
                 print("TO DO")
@@ -247,8 +244,10 @@ def response(request):
             if code[2] == "0":
                 print("get log-in point")
                 if value.project_privilege[g.i2] != "high":
-                    pass
-                    #continue
+                    print("Error: projectに十分な権限がありません")
+                    Answer = to_num(user + "/-1")
+                    print(Answer)
+                    return Answer
                 try:
                     f = open(datadir + "/about/" + to_txt(id) + "/login.txt", "r")
                     logintime = float(f.readline())
@@ -270,15 +269,11 @@ def response(request):
                 if time.time()/86400 - logintime >= 1.0:
                     print("ログインポイントを更新")
                     path = datadir + "/about/" + to_txt(id) + "/about.txt"
-                    with open(path, mode='r', newline='\n') as file:
-                        file = file.readlines()
-                        print(file)
-                        file2 = file[1].rstrip()  # 2行目を取得
-                    print(file2)
-                    Answer = id + to_num("/" + str(float(file2) + 3.0))
+                    file = read_file_lines(path)[1]
+                    Answer = id + to_num("/" + str(float(file) + 3.0))
 
                     f = open(path, "w")
-                    f.write(str(file[0].rstrip()) + "\n" + str(float(file2) + 3.0) )
+                    f.write(str(file[0].rstrip()) + "\n" + str(float(file) + 3.0) )
                     f.close
 
                     print("上書き")
@@ -320,6 +315,26 @@ def write_file(path, txt):
         print(f"{path} にファイルを作成")
     except Exception as e:
         print(f"Error: {e}")
+
+def read_file(path):
+    try:
+        with open(path, 'r') as file:  # 'r'モードで読み込み
+            content = file.read()  # ファイルの全内容を読む
+        return content
+    except FileNotFoundError:
+        print(f"{path} は見つかりませんでした。")
+    except Exception as e:
+        print(f"エラーが発生しました: {e}")
+
+def read_file_lines(file_path):
+    try:
+        with open(file_path, 'r') as file:  # 'r'モードで読み込み
+            lines = file.readlines()  # 各行をリストとして読む
+        return lines
+    except FileNotFoundError:
+        print(f"{file_path} は見つかりませんでした。")
+    except Exception as e:
+        print(f"エラーが発生しました: {e}")
 
 def lock_txt(txt,password):
     s_box = _s_box(password)
