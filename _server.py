@@ -1,7 +1,7 @@
 import os
 import requests
 
-version = "2.0.β"
+version = "2.0 - β.0.6"
 print("Server version: v." + version)
 
 try:
@@ -26,10 +26,14 @@ if response.status_code == 200: # ステータスコードを確認
         an = input()
         if an.lower() == "y":
             try:
-                os.system("git pull")
+                os.system("sudo git pull")
                 print("プログラムを更新しました。")
-            except Exception as error:
-                print(f"Error: error")
+            except:
+                try:
+                    os.system("git pull")
+                    print("プログラムを更新しました。")
+                except Exception as error:
+                    print(f"Error: error")
     else:
         print("更新はありません。")
 
@@ -41,6 +45,7 @@ print("サーバーを起動中...")
 import main
 import value
 import global_value as g
+import concurrent.futures
 # import time
 
 path = value.path
@@ -56,19 +61,20 @@ file.close()
 i = 1
 print("Done!")
 
-while True:
-    i += 1
-    for g.i2 in range(len(value.project_id)):
+def run_task(i):
         try:
-            main.main(value.project_id[g.i2])
+            main.main(value.project_id[i],i)
         except Exception as error:
             print(error)
-            """
-            if error.args[0] == "[Errno 11001] getaddrinfo failed":
-                print("Scratch server がダウンしている可能性が高いです。")
-                # print("このエラーを表示したくない場合は")
-            """
-        # time.sleep(0.05)
+
+while True:
+    i += 1
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(value.project_id)) as executor:
+        futures = [executor.submit(run_task, i) for i in range(len(value.project_id))]  # スレッドを立ち上げ
+
+        # 全ての結果を取得するまで待機
+        results = [f.result() for f in concurrent.futures.as_completed(futures)]
+
 
 
     if i == 50:

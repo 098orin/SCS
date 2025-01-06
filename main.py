@@ -13,7 +13,7 @@ except:
     os.system("pip install -U scratchattach")
     import scratchattach as scratch3
 
-def main(id):
+def main(id, i):
     # session = scratch3.login(value.username, value.password)
     # conn = session.connect_cloud(id)
     
@@ -21,6 +21,6 @@ def main(id):
     unix_time = unix_time/3600/24
     unix_time = unix_time-1.0
     # print("Time stamp:", unix_time)
-    fun.set_cloud("time", unix_time) #the variable name is specified without the cloud emoji
+    fun.set_cloud("time", unix_time, i) #the variable name is specified without the cloud emoji
     print(id)
-    fun.response_cloudvalues (fun.getcloudvalues(id) , id)
+    fun.response_cloudvalues (fun.getcloudvalues(id, i) , id, i)

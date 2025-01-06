@@ -1,6 +1,6 @@
 # from email.policy import default
 import value
-import global_value as g
+# import global_value as g
 import json
 import time
 import os
@@ -12,7 +12,7 @@ except:
     import scratchattach as scratch3
 print(os.system("pip show scratchattach"))
 
-global i2
+# global i2
 
 pdata = {}
 
@@ -56,11 +56,11 @@ def to_num(intxt):
     return Answer
 
 
-def getcloudvalues(id):
-    if value.project_client[g.i2] == "sc":
+def getcloudvalues(id, i):
+    if value.project_client[i] == "sc":
         request = scratch3.get_cloud(id) #Returns a dict with all cloud var values
         del request['time']
-    elif value.project_client[g.i2] == "tw":
+    elif value.project_client[i] == "tw":
         request = scratch3.get_tw_cloud(id).get_all_vars() #Returns a dict with all cloud var values
         """
         TS1 = "{"
@@ -78,15 +78,15 @@ def getcloudvalues(id):
     
     return request
 
-def response_cloudvalues (repuest,id):
+def response_cloudvalues (repuest,id, gi):
     print(repuest)
     if repuest:
         i = 0
         for n in list(repuest):
             i += 1
-            set_cloud(i, response(n))
+            set_cloud(i, response(n, gi), gi)
                             
-def response(request):
+def response(request, gi):
     request = str(request)
     if request != "0": #not None
         code = request[0:3]
@@ -129,7 +129,7 @@ def response(request):
             elif code[2] == "1":
                 # make id
                 print ("make id") 
-                if value.project_privilege[g.i2] != "high":
+                if value.project_privilege[gi] != "high":
                     print("Error: projectに十分な権限がありません")
                     Answer = to_num(user + "/-1")
                     print(Answer)
@@ -150,7 +150,7 @@ def response(request):
 
             elif code[2] == "2":
                 # 認証
-                if value.project_client[g.i2] == "tw":
+                if value.project_client[gi] == "tw":
                     print("認証")
                     if tw_認証.get(str(user)) == 1:
                         Answer = user + to_num("/1")
@@ -160,7 +160,7 @@ def response(request):
 
             elif code[2] == "3":
                 print("認証")
-                if value.project_client[g.i2] == "sc":
+                if value.project_client[gi] == "sc":
                     tw_認証[str(user)] = 1
                     Answer = to_num(user + "/-1")
                 else:
@@ -243,7 +243,7 @@ def response(request):
             print("point")
             if code[2] == "0":
                 print("get log-in point")
-                if value.project_privilege[g.i2] != "high":
+                if value.project_privilege[gi] != "high":
                     print("Error: projectに十分な権限がありません")
                     Answer = to_num(user + "/-1")
                     print(Answer)
@@ -286,13 +286,13 @@ def response(request):
         return Answer
 
 
-def set_cloud (n,num:int):
-    conn = session.connect_cloud(value.project_id[g.i2])
-    if value.project_client[g.i2] == "sc":
-        conn = session.connect_cloud(value.project_id[g.i2])
-    elif value.project_client[g.i2] == "tw":
+def set_cloud (n,num:int, gi):
+    conn = session.connect_cloud(value.project_id[gi])
+    if value.project_client[gi] == "sc":
+        conn = session.connect_cloud(value.project_id[gi])
+    elif value.project_client[gi] == "tw":
         msg ="SCS project server by" + value.username + " on Scratch"
-        conn = scratch3.get_tw_cloud(value.project_id[g.i2], contact=msg)
+        conn = scratch3.get_tw_cloud(value.project_id[gi], contact=msg)
     conn.set_var(n,int(num))
 
 def count_files(path):
