@@ -1,7 +1,7 @@
 import os
 import requests
 
-version = "2.0 - β.0.6"
+version = "2.0 - β.2.0"
 print("Server version: v." + version)
 
 try:
@@ -44,8 +44,7 @@ print("サーバーを起動中...")
 
 import main
 import value
-import global_value as g
-import concurrent.futures
+# import concurrent.futures
 # import time
 
 path = value.path
@@ -61,6 +60,52 @@ file.close()
 i = 1
 print("Done!")
 
+import threading
+import subprocess
+import sys
+import signal
+import time
+
+coms = []
+threads = []
+processes = []
+
+def signal_handler(sig, frame):
+    print("\nサーバーを終了します...")
+
+    for process in processes:
+        process.terminate() # プロセスを終了する
+
+    print("サーバーを終了しました。")
+    sys.exit(0)
+
+# シグナルハンドラの設定
+signal.signal(signal.SIGINT, signal_handler)
+
+for i in range(len(value.project_id)):
+    com = f"python {value.path}/event.py {i}"
+    coms.append(com)
+print(coms)
+
+# スレッドを作成してプロセスを実行
+while True:
+    for cmd in coms:
+        process = subprocess.Popen(cmd, shell=True, text=True)
+        processes.append(process)  # プロセスをリストに追加
+
+        thread = threading.Thread(target=process.wait)  # プロセスが終了するのを待つスレッド
+        threads.append(thread)
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    time.sleep(10)
+
+print("サーバーを終了しました。")
+
+
+"""
 def run_task(i):
         try:
             main.main(value.project_id[i],i)
@@ -96,4 +141,4 @@ while True:
 
         except Exception as error:
             print(error)
-    
+"""

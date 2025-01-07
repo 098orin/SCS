@@ -78,7 +78,7 @@ def getcloudvalues(id, i):
     
     return request
 
-def response_cloudvalues (repuest,id, gi):
+def response_cloudvalues (repuest, gi):
     print(repuest)
     if repuest:
         i = 0
