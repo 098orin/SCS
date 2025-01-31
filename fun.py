@@ -4,6 +4,7 @@ import value
 import json
 import time
 import os
+from datetime import datetime
 
 try:
     import scratchattach as scratch3
@@ -30,7 +31,7 @@ def to_txt(number):
         if number == "" or len(number)%2 == 1:
             return " "
         Answer = ""
-        txt = "/#0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_+.\\"
+        txt = "/#0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_+.\\$"
         num = ""
         for i in range(len(str(number))):
 
@@ -46,7 +47,7 @@ def to_txt(number):
 
 def to_num(intxt):
     Answer = ""
-    txt = "/#0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_+.\\"
+    txt = "/#0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_+.\\$"
     for i in range(len(intxt)):
         if intxt[i] in txt:
             num = 0
@@ -98,6 +99,14 @@ def response(request, gi):
                 break
             user = user + req[i]
         
+        temp = i + 1
+        var = ""
+        for i in range(len(req)):
+            i += temp
+            if req[i] == "/":
+                break
+            var = req[i] + var
+        
         server_id = ""
         for i in range(len(req)): 
             i = len(req) - i
@@ -120,51 +129,64 @@ def response(request, gi):
         if code[0] == "1":
             # no id
             print('no id')
-            if code[2] == "0":
-                path = datadir + "/id/" + str(user) + ".txt"
-                id = read_file(path)
-                if id == None:
-                    pass
+            if code[1] == "0":
+                if code[2] == "0":
+                    path = datadir + "/id/" + str(user) + ".txt"
+                    id = read_file(path)
+                    if id == None:
+                        pass
 
-            elif code[2] == "1":
-                # make id
-                print ("make id") 
-                if value.project_privilege[gi] != "high":
-                    print("Error: projectに十分な権限がありません")
-                    Answer = to_num(user + "/-1")
-                    print(Answer)
-                    return Answer
-                path = datadir + "/id/" + str(user) + ".txt"
-                print(path)
-                if os.path.isfile(path):
-                    Answer = to_num(user + "/-1")
-                else:
-                    id = count_files(datadir + "/id/") + 1
-                    write_file(path, id)
-                    path = datadir + "/about/" + str(id) + "/about.txt"
+                elif code[2] == "1":
+                    # make id
+                    print ("make id") 
+                    if value.project_privilege[gi] != "high":
+                        print("Error: projectに十分な権限がありません")
+                        Answer = to_num(user + "/-1")
+                        print(Answer)
+                        return Answer
+                    path = datadir + "/id/" + str(user) + ".txt"
                     print(path)
-                    content = "1\n100"
-                    write_file(path, content)
-                    Answer = to_num(user + "/" + str(id))
+                    if os.path.isfile(path):
+                        Answer = to_num(user + "/-1")
+                    else:
+                        id = count_files(datadir + "/id/") + 1
+                        write_file(path, id)
+                        path = datadir + "/about/" + str(id) + "/about.txt"
+                        print(path)
+                        content = "1\n100"
+                        write_file(path, content)
+                        Answer = to_num(user + "/" + str(id))
 
 
-            elif code[2] == "2":
-                # 認証
-                if value.project_client[gi] == "tw":
+                elif code[2] == "2":
+                    # 認証
+                    if value.project_client[gi] == "tw":
+                        print("認証")
+                        if tw_認証.get(str(user)) == 1:
+                            Answer = user + to_num("/1")
+                            print (1)
+                            del tw_認証[str(user)]
+                            print (0)
+
+                elif code[2] == "3":
                     print("認証")
-                    if tw_認証.get(str(user)) == 1:
-                        Answer = user + to_num("/1")
-                        print (1)
-                        del tw_認証[str(user)]
-                        print (0)
+                    if value.project_client[gi] == "sc":
+                        tw_認証[str(user)] = 1
+                        Answer = to_num(user + "/-1")
+                    else:
+                        Answer = to_num(user + "/-1")
 
-            elif code[2] == "3":
-                print("認証")
-                if value.project_client[gi] == "sc":
-                    tw_認証[str(user)] = 1
-                    Answer = to_num(user + "/-1")
-                else:
-                    Answer = to_num(user + "/-1")
+            elif code[1] == "1":
+                if code[2] == "0":
+                    path = datadir + "/about/password.txt"
+                    password = read_file(path)
+                    passvar = unlock(password,days_since_2000(),var)
+                    if password == passvar:
+                        print("パスワードが一致しました")
+                        Answer = user + to_num("/1")
+                    else:
+                        print("パスワードが間違っています")
+                        Answer = to_num(user + "/$$-1")
 
                          
         elif code[0] == "2":
@@ -295,6 +317,109 @@ def set_cloud (n,num:int, gi):
         conn = scratch3.get_tw_cloud(value.project_id[gi], contact=msg)
     conn.set_var(n,int(num))
 
+def lock(key,IV,data,b=0):
+    if len(str(key)) < 11:
+        return lock(str(key) + "0",IV,data,b)
+    if b != 5:
+        return lock(base(key,5),IV,base(data,5),5)
+    Answer = ""
+    sBox = s_box(data,key)
+    i = j = 0
+    for k in range(len(data)):
+        i = (i+1) % len(sBox)
+        j = (j + sBox[i]) % len(sBox)
+        if str(data[k]) == str(sBox[j]):
+            Answer = Answer + "0"
+        else:
+            Answer = Answer + str(int(data[k]) + int(sBox[j]))
+    i = ""
+    k = 0
+    for j in list(Answer):
+        k += 1
+        if k == 1:
+            i = 1 + int(j)
+        else:
+            i = str(i) + str(j)
+    Answer = int(i)
+    Answer = Answer * IV + IV
+    sBox = s_box(Answer, str(IV)+str(key), IV=True)
+    Answer = "1"
+    for i in sBox:
+        Answer = Answer + str(i)
+    return Answer
+
+def unlock(key,IV, data,b=0):
+    if len(str(key)) < 11:
+        return unlock(str(key) + "0",IV,data,b)
+    if b != 5:
+        sBox = s_box(data[1:],str(IV)+base(key,5),IV=True,unlock=True)
+        Answer = str("".join(map(str,sBox)))
+        Answer = int(Answer) - int(str(IV) + str(base(key,5)))
+        Answer = str((Answer - IV) // IV)
+        k = 0
+        i = ""
+        for k in range(len(Answer)):
+            if k == 0:
+                i = int(Answer[0]) - 1
+            else:
+                i = str(i) + Answer[k]
+        return unlock(base(key,5),IV,i,5)
+    sBox = s_box(data,key)
+    i = j = k = 0
+    Answer = ""
+    data = str(data)
+    for k in range(len(data)):
+        i = (i+1) % len(sBox)
+        j = (j + int(sBox[i])) % len(sBox)
+        if "0" == str(sBox[j]):
+            Answer = Answer + str(sBox[j])
+        else:
+            Answer = Answer + str(int(data[k]) - int(sBox[j]))
+    return str(int(Answer,5))
+
+def s_box(data,key,IV=False,unlock=False):
+    sBox = list() 
+    if unlock:
+        for i in data:
+            sBox.append(i)
+    elif IV:
+        for i in str(int(data)+int(key)):
+            sBox.append(i)
+    else:
+        for i in range(len(str(data))):
+            sBox.append(i%6)
+
+    data = str(data)
+    key = str(key)
+    if unlock:
+        for i in range(len(sBox)):
+            i2 = len(sBox) - i -1
+            j = (i2 + int(key[i2%len(key)])) %len(sBox)
+            sBox[i2], sBox[j] = sBox[j], sBox[i2]
+    else:
+        for i in range(len(sBox)):
+            j = (i + int(key[i % len(key)])) % len(sBox)
+            sBox[i], sBox[j] = sBox[j], sBox[i]
+
+    return sBox
+        
+
+def base(num, base):
+    num = int(num)
+    if num == 0:
+        return "0"
+    
+    digits = ""
+    while num > 0:
+        remainder = num % base
+        if remainder < 10:
+            digits = str(remainder) + digits  # 0-9の場合
+        else:
+            digits = chr(remainder - 10 + ord('A')) + digits  # 10-15の場合（16進数用）
+        num //= base
+
+    return digits
+
 def count_files(path):
     # ディレクトリ内のファイルをカウントする
     try:
@@ -336,38 +461,13 @@ def read_file_lines(file_path):
     except Exception as e:
         print(f"エラーが発生しました: {e}")
 
-def lock_txt(txt,password):
-    s_box = _s_box(password)
-    for i in range(32):
-        i += 1
-        i1 = i % (len(txt) + 1)
-        i1 = txt[i1]
-        i -= 1
-        if s_box[i] == i1:
-            s_box[i] = "00"
-        else:
-            s_box[i] = str(s_box[i] + i1)
-        if len(s_box[i]) == 1:
-            s_box.insert(i,"0" + str(s_box[i]) )
-    Answer = ""
-    for i in range(32):
-        Answer = Answer + str(s_box[i])
-
-
-def _s_box(password):
-    s_box = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32]
-    for i in range(64):
-        i += 1
-        i1 = i % len(password) + 1
-        i1 = i + password[i1]
-        i1 = i1 % len(password)
-        i -= 1
-        if i != i1:
-            s_box.insert(i, s_box[i])
-            if i1 <= i:
-                s_box.insert(i, s_box[i+1])
-            else:
-                s_box.insert(i1+1, s_box[i+1])
-        del s_box[i+1]
-        del s_box[i1+1]
-    return s_box
+def days_since_2000():
+    # 2000年1月1日午前0時0分0秒をUTCで定義
+    start_date = datetime(2000, 1, 1, 0, 0, 0)
+    
+    # 現在のUTC時間を取得
+    current_date = datetime.utcnow()
+    
+    # 経過日数を計算
+    delta = current_date - start_date
+    return delta.days
