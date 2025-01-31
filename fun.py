@@ -11,7 +11,7 @@ try:
 except:
     os.system("pip install -U scratchattach")
     import scratchattach as scratch3
-print(os.system("pip show scratchattach"))
+    print(os.system("pip show scratchattach"))
 
 # global i2
 
