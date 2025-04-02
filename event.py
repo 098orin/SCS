@@ -28,6 +28,6 @@ def on_create(activity):
 
 @events.event #Called when the event listener is ready
 def on_ready():
-   print("Event listener ready!")
+   print(f"{gi}: Event listener ready!")
 
 events.start()
