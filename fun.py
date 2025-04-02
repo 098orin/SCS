@@ -10,6 +10,10 @@ import tools
 
 tools.install_if_not_exists("scratchattach")
 import scratchattach as scratch3
+import tools
+
+tools.install_if_not_exists("scratchattach")
+import scratchattach as scratch3
 
 # global i2
 
