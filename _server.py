@@ -42,7 +42,7 @@ else:
 
 print("サーバーを起動中...")
 
-import main
+# import main
 import value
 # import concurrent.futures
 # import time
@@ -76,7 +76,7 @@ def signal_handler(sig, frame):
     for process in processes:
         process.terminate() # プロセスを終了する
 
-    print("サーバーを終了しました。")
+    print("サーバーを正常に終了しました。")
     sys.exit(0)
 
 # シグナルハンドラの設定
@@ -102,7 +102,7 @@ while True:
 
     time.sleep(10)
 
-print("サーバーを終了しました。")
+# print("サーバーを終了しました。")
 
 
 """

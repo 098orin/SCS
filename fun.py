@@ -8,8 +8,16 @@ from datetime import datetime
 
 try:
     import scratchattach as scratch3
-except:
+except Exception as error:
+    print("scratchattachが見つかりません。")
+    print("scratchattachをインストールします。")
+    print(error)
     os.system("pip install -U scratchattach")
+    try:
+        os.system("sudo pip install -U scratchattach")
+    except Exception as error:
+        print("sudo pip install に失敗しました")
+        print(error)
     import scratchattach as scratch3
     print(os.system("pip show scratchattach"))
 
@@ -89,6 +97,7 @@ def response_cloudvalues (repuest, gi):
                             
 def response(request, gi):
     request = str(request)
+    request = purse_request(request)
     if request != "0": #not None
         code = request[0:3]
         req = to_txt(request[3:len(request)])
@@ -178,11 +187,15 @@ def response(request, gi):
 
             elif code[1] == "1":
                 if code[2] == "0":
-                    path = datadir + "/about/password.txt"
+                    path = datadir + "/about/" + str(id) + "password.txt"
                     password = read_file(path)
                     passvar = unlock(password,days_since_2000(),var)
                     if password == passvar:
                         print("パスワードが一致しました")
+                        sessionid = 0
+                        all_sessionid = read_file(datadir + "/sessionid/all.txt")
+                        while sessionid not in all_sessionid:
+                            pass
                         Answer = user + to_num("/1")
                     else:
                         print("パスワードが間違っています")
@@ -306,6 +319,25 @@ def response(request, gi):
                     Answer = id + to_num("/" + "-1")
         print(Answer)
         return Answer
+
+def purse_request(request):
+    if request[0:2] == "11":
+        return str(request[2:])
+    elif request[0:2] == "10":
+        request = str(request[2:])
+        i = len(request)
+        while request[i-2:i] != "10":
+            serverid = request[i-2:i] + serverid
+            i -= 2
+        while request[i-2:i] != "10":
+            user = request[i-2:] + user
+            i -= 2
+        serverid = to_txt(serverid)
+        user = to_txt(user)
+
+        if serverid != value.username:
+            return 0
+
 
 
 def set_cloud (n,num:int, gi):
