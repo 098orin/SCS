@@ -7,6 +7,7 @@ import os
 from datetime import datetime
 
 import tools
+import crpt
 
 tools.install_if_not_exists("scratchattach")
 import scratchattach as scratch3
@@ -89,6 +90,7 @@ def response(request, gi):
     Answer = ""
     request = str(request)
     request, safe = purse_request(request)
+
     if request != "0": #not None
         code = request[0:3]
         req = to_txt(request[3:len(request)])
@@ -325,6 +327,7 @@ def purse_request(request):
             i -= 2
         serverid = to_txt(serverid)
         user = to_txt(user)
+        return str(request[0:i]), True
 
         if serverid != value.username:
             return 0
