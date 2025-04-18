@@ -15,3 +15,6 @@ def install_if_not_exists(package_name: str):
             print(f"パッケージ '{package_name}' のインストールに失敗しました。")
         except Exception as e:
             print(f"予期せぬエラーが発生しました: {e}")
+
+def hex_to_bytes(hex_str: str) -> bytes:
+    return bytes.fromhex(hex_str)

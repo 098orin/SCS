@@ -86,11 +86,13 @@ def response_cloudvalues (repuest, gi):
             set_cloud(i, response(n, gi), gi)
                             
 def response(request, gi):
+    Answer = ""
     request = str(request)
-    request = purse_request(request)
+    request, safe = purse_request(request)
     if request != "0": #not None
         code = request[0:3]
         req = to_txt(request[3:len(request)])
+        print(req)
 
         user = ""
         for i in range(len(req)):
@@ -135,7 +137,7 @@ def response(request, gi):
                     if id == None:
                         pass
 
-                elif code[2] == "1":
+                elif code == "101":
                     # make id
                     print ("make id") 
                     if value.project_privilege[gi] != "high":
@@ -157,7 +159,7 @@ def response(request, gi):
                         Answer = to_num(user + "/" + str(id))
 
 
-                elif code[2] == "2":
+                elif code == "102":
                     # 認証
                     if value.project_client[gi] == "tw":
                         print("認証")
@@ -167,7 +169,7 @@ def response(request, gi):
                             del tw_認証[str(user)]
                             print (0)
 
-                elif code[2] == "3":
+                elif code == "103":
                     print("認証")
                     if value.project_client[gi] == "sc":
                         tw_認証[str(user)] = 1
@@ -175,21 +177,20 @@ def response(request, gi):
                     else:
                         Answer = to_num(user + "/-1")
 
-            elif code[1] == "1":
-                if code[2] == "0":
-                    path = datadir + "/about/" + str(id) + "password.txt"
-                    password = read_file(path)
-                    passvar = "" # 未実装
-                    if password == passvar:
-                        print("パスワードが一致しました")
-                        sessionid = 0
-                        all_sessionid = read_file(datadir + "/sessionid/all.txt")
-                        while sessionid not in all_sessionid:
-                            pass
-                        Answer = user + to_num("/1")
-                    else:
-                        print("パスワードが間違っています")
-                        Answer = to_num(user + "/$$-1")
+            elif code == "110":
+                path = datadir + "/about/" + str(id) + "password.txt"
+                password = read_file(path)
+                passvar = "" # 未実装
+                if password == passvar:
+                    print("パスワードが一致しました")
+                    sessionid = 0
+                    all_sessionid = read_file(datadir + "/sessionid/all.txt")
+                    while sessionid not in all_sessionid:
+                        pass
+                    Answer = user + to_num("/1")
+                else:
+                    print("パスワードが間違っています")
+                    Answer = to_num(user + "/$$-1")
 
                          
         elif code[0] == "2":
@@ -312,7 +313,7 @@ def response(request, gi):
 
 def purse_request(request):
     if request[0:2] == "11":
-        return str(request[2:])
+        return str(request[2:]), False
     elif request[0:2] == "10":
         request = str(request[2:])
         i = len(request)

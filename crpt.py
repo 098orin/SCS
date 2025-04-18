@@ -1,46 +1,62 @@
+from unittest.util import strclass
 import tools
 
 tools.install_if_not_exists("cryptography")
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
-"""
-# 秘密鍵、nonce、追加認証データ（AAD）を用意
-key = b'secret_key_must_be_32_bytes' # 32バイトの秘密鍵だよ
-nonce = b'nonce_must_be_12_bytes'  # 12バイトのnonce
-associated_data = b'authenticated_data'  # AAD
-"""
+import os
+from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+from cryptography.exceptions import InvalidTag
 
-# 暗号化！
-def encrypt(data, key, nonce, associated_data):
-    cipher = Cipher(algorithms.ChaCha20Poly1305(key, nonce), mode=None, backend=default_backend())
-    encryptor = cipher.encryptor()
-    encryptor.authenticate_additional_data(associated_data)  # AAD認証
-    ciphertext = encryptor.update(data) + encryptor.finalize()
-    tag = encryptor.tag  # タグ
-    return ciphertext, tag
+# --- 暗号化関数 ---
+def encrypt_data(key: bytes, plaintext: bytes, nonce: bytes, aad: bytes = None) -> str:
+    """
+    ChaCha20-Poly1305 を使ってデータを暗号化するよ！
 
-# 復号！
-def decrypt(ciphertext, tag, key, nonce, associated_data):
-    cipher = Cipher(algorithms.ChaCha20Poly1305(key, nonce, tag), mode=None, backend=default_backend())
-    decryptor = cipher.decryptor()
-    decryptor.authenticate_additional_data(associated_data)  # AAD認証
+    Args:
+        key: 暗号化に使うキー (32バイト)
+        plaintext: 暗号化したいデータ (バイト列)
+        nonce: nonce (12バイト)
+        aad: 付加認証データ (オプション、バイト列)
+
+    Returns:
+        ciphertext: 暗号化されたデータと認証タグ (バイト列)
+    """
+
+    # ChaCha20Poly1305 オブジェクトを作成するよ キーを渡す
+    aead = ChaCha20Poly1305(key)
+
+    # encrypt() メソッドで暗号化 nonce, plaintext, aad を渡す
+    ciphertext = aead.encrypt(nonce, plaintext, aad)
+
+    # 暗号化されたデータを返す
+    return ciphertext.hex()
+
+# --- 復号化関数 ---
+def decrypt_data(key: bytes, nonce: bytes, ciphertext: bytes, aad: bytes = None) -> str | None:
+    """
+    ChaCha20-Poly1305 を使ってデータを復号化するよ！
+
+    Args:
+        key: 復号化に使うキー (32バイト)
+        nonce: 暗号化時に使われた nonce (12バイト)
+        ciphertext: 暗号化されたデータと認証タグ (バイト列)
+        aad: 付加認証データ (オプション、バイト列)
+
+    Returns:
+        復号化されたデータ (HEX列)。認証に失敗した場合は None を返すよ。
+    """
+    # ChaCha20Poly1305 オブジェクトを作成するよ！ キーを渡すんだ。
+    aead = ChaCha20Poly1305(key)
+
     try:
-        plaintext = decryptor.update(ciphertext) + decryptor.finalize()
-        return plaintext
-    except:
-        return None  # 認証に失敗したらNoneを返す
+        # decrypt() メソッドで復号化！ nonce, ciphertext, aad を渡すよ。
+        # 認証に失敗すると InvalidTag が発生するんだ。
+        decrypted_plaintext = aead.decrypt(nonce, ciphertext, aad)
 
-# 実行！
-"""
-data = b'Hello, cute world!'
-ciphertext, tag = encrypt(data, b'secret_key_must_be_32_bytes', b'nonce_must_be_12_bytes', b'authenticated_data')
-decrypted_data = decrypt(ciphertext, tag, b'secret_key_must_be_32_bytes', b'nonce_must_be_12_bytes', b'authenticated_data')
+        # 復号化に成功したらデータを返すよ！
+        return decrypted_plaintext.hex()
 
-if decrypted_data:
-    print("元データ:", data)
-    print("復号データ:", decrypted_data)
-else:
-    print("復号失敗...")"
-"""
+    except InvalidTag:
+        # 認証に失敗した場合は None を返すか、例外を再 raise するか選び方があるけど
+        # 今回は None を返すようにしてみたよ。
+        print("⚠ 認証に失敗しました！ データが改ざんされた可能性があります。")
+        return None
