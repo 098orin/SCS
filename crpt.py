@@ -1,7 +1,6 @@
 from unittest.util import strclass
 import tools
 
-tools.install_if_not_exists("cryptography")
 import os
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 from cryptography.exceptions import InvalidTag

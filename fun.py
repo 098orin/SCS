@@ -6,10 +6,8 @@ import time
 import os
 from datetime import datetime
 
-import tools
 import crpt
 
-tools.install_if_not_exists("scratchattach")
 import scratchattach as scratch3
 
 # global i2

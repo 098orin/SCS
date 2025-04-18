@@ -1,7 +1,7 @@
 import os
 import requests
 
-version = "2.0 - β.2.0"
+version = "2.0 - β.2.1"
 print("Server version: v." + version)
 
 try:
@@ -46,6 +46,10 @@ print("サーバーを起動中...")
 import value
 # import concurrent.futures
 # import time
+import tools
+
+tools.install_if_not_exists("cryptography")
+tools.install_if_not_exists("scratchattach")
 
 path = value.path
 
