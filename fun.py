@@ -60,18 +60,6 @@ def getcloudvalues(id, i):
         del request['time']
     elif value.project_client[i] == "tw":
         request = scratch3.get_tw_cloud(id).get_all_vars() #Returns a dict with all cloud var values
-        """
-        TS1 = "{"
-        for i in range(len(request)):
-            TS = request[i]
-            if TS["name"] != "☁ time":
-                TS = '"' + str( TS["name"] )[2] + '": "' + str(TS["value"])  + '"'
-                if i != len(request) - 1:
-                    TS = TS + ", "
-                TS1 = TS1 + TS
-        TS1 = TS1 + "}"
-        """
-        # request = json.loads(request)
         del request['time']
     
     return request
@@ -99,6 +87,7 @@ def response(request, gi):
             if req[i] == "/":
                 break
             user = user + req[i]
+        user = str(user)
         
         temp = i + 1
         var = ""
@@ -132,7 +121,7 @@ def response(request, gi):
             print('no id')
             if code[1] == "0":
                 if code[2] == "0":
-                    path = datadir + "/id/" + str(user) + ".txt"
+                    path = datadir + "/id/" + user + ".txt"
                     id = read_file(path)
                     if id == None:
                         pass
@@ -145,7 +134,7 @@ def response(request, gi):
                         Answer = to_num(user + "/-1")
                         print(Answer)
                         return Answer
-                    path = datadir + "/id/" + str(user) + ".txt"
+                    path = datadir + "/id/" + user + ".txt"
                     print(path)
                     if os.path.isfile(path):
                         Answer = to_num(user + "/-1")
@@ -180,14 +169,22 @@ def response(request, gi):
             elif code == "110":
                 path = datadir + "/about/" + str(id) + "password.txt"
                 password = read_file(path)
-                passvar = "" # 未実装
+                aad = pad_right(len(user), 4)
+                nonce = pad_right(days_since_2000(), 24)
+                if file_exists(path):
+                    Answer = to_num(user + "/$$-0")
+                    return Answer
+                passvar = crpt.decrypt_data(password, req, nonce, aad)
                 if password == passvar:
                     print("パスワードが一致しました")
-                    sessionid = 0
-                    all_sessionid = read_file(datadir + "/sessionid/all.txt")
-                    while sessionid not in all_sessionid:
-                        pass
-                    Answer = user + to_num("/1")
+                    sessionid = os.urandom(16).hex()
+                    all_sessionid = read_file_lines(datadir + "/sessionid/all_ids.txt")
+                    while sessionid in all_sessionid:
+                        sessionid = os.urandom(16).hex()
+                    all_sessionid.append(str(sessionid))
+                    write_file(datadir + "/sessionid/all_ids.txt", all_sessionid)
+                    write_file(datadir + "/sessionid/all_users.txt", user)
+                    Answer = to_num(user + "/1/" + str(sessionid))
                 else:
                     print("パスワードが間違っています")
                     Answer = to_num(user + "/$$-1")
@@ -325,11 +322,9 @@ def purse_request(request):
             i -= 2
         serverid = to_txt(serverid)
         user = to_txt(user)
-        return str(request[0:i]), True
-
         if serverid != value.username:
             return 0
-
+        return str(request[0:i]), True
 
 
 def set_cloud (n,num:int, gi):
@@ -364,6 +359,15 @@ def write_file(path, txt):
         print(f"Error: {e}")
 
 def read_file(path):
+    """
+    指定したパスのファイルを読み込む
+
+    Args:
+        path: ファイルパス
+
+    Returns:
+        ファイルの内容。なかったら何も返さず、エラーメッセージを表示する。
+    """
     try:
         with open(path, 'r') as file:  # 'r'モードで読み込み
             content = file.read()  # ファイルの全内容を読む
@@ -383,6 +387,9 @@ def read_file_lines(file_path):
     except Exception as e:
         print(f"エラーが発生しました: {e}")
 
+def file_exists(path):
+  return os.path.exists(path)
+
 def days_since_2000():
     # 2000年1月1日午前0時0分0秒をUTCで定義
     start_date = datetime(2000, 1, 1, 0, 0, 0)
@@ -393,3 +400,20 @@ def days_since_2000():
     # 経過日数を計算
     delta = current_date - start_date
     return delta.days
+
+def pad_right(text: str, total_length: int, pad_char: str = 'f') -> str:
+    """
+    文字列の右側を指定した文字で埋めて指定した長さにする
+
+    Args:
+        text: 埋めたい文字列
+        total_length: 埋めた後の文字列の目標の長さ
+        pad_char: 埋める文字 (デフォルトは"f")
+
+    Returns:
+        右側を指定した文字で埋めた文字列
+    """
+    if len(text) > total_length:
+        return text[:total_length]
+    else:
+        return text.ljust(total_length, pad_char)

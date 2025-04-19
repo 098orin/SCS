@@ -1,4 +1,4 @@
-# this project is using https://github.com/TimMcCool/scratchattach
+# v.1.x のコード。廃止済み
 
 # main.py
 

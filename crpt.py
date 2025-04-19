@@ -1,7 +1,4 @@
-from unittest.util import strclass
-import tools
-
-import os
+from pydoc import plain
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 from cryptography.exceptions import InvalidTag
 
@@ -19,6 +16,15 @@ def encrypt_data(key: bytes, plaintext: bytes, nonce: bytes, aad: bytes = None) 
     Returns:
         ciphertext: 暗号化されたデータと認証タグ (バイト列)
     """
+        # Byteでなかったら変換
+    if isinstance(key, bytes):
+        key = bytes.fromhex(key)
+    if isinstance(ciphertext, bytes):
+        plaintext = bytes.fromhex(plaintext)
+    if isinstance(nonce, bytes):
+        nonce = bytes.fromhex(nonce)
+    if isinstance(aad, bytes):
+        aad = bytes.fromhex(aad)
 
     # ChaCha20Poly1305 オブジェクトを作成するよ キーを渡す
     aead = ChaCha20Poly1305(key)
@@ -30,19 +36,28 @@ def encrypt_data(key: bytes, plaintext: bytes, nonce: bytes, aad: bytes = None) 
     return ciphertext.hex()
 
 # --- 復号化関数 ---
-def decrypt_data(key: bytes, nonce: bytes, ciphertext: bytes, aad: bytes = None) -> str | None:
+def decrypt_data(key, ciphertext, nonce, aad = None) -> str | None:
     """
     ChaCha20-Poly1305 を使ってデータを復号化する
 
     Args:
         key: 復号化に使うキー (32バイト)
-        nonce: 暗号化時に使われた nonce (12バイト)
         ciphertext: 暗号化されたデータと認証タグ (バイト列)
+        nonce: 暗号化時に使われた nonce (12バイト)
         aad: 付加認証データ (オプション、バイト列)
 
     Returns:
         復号化されたデータ (HEX列)。認証に失敗した場合は None を返す
     """
+    # Byteでなかったら変換
+    if isinstance(key, bytes):
+        key = bytes.fromhex(key)
+    if isinstance(ciphertext, bytes):
+        ciphertext = bytes.fromhex(ciphertext)
+    if isinstance(nonce, bytes):
+        nonce = bytes.fromhex(nonce)
+    if isinstance(aad, bytes):
+        aad = bytes.fromhex(aad)
     # ChaCha20Poly1305 オブジェクトを作成 キーを渡す
     aead = ChaCha20Poly1305(key)
 

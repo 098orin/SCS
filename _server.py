@@ -42,10 +42,7 @@ else:
 
 print("サーバーを起動中...")
 
-# import main
 import value
-# import concurrent.futures
-# import time
 import tools
 
 tools.install_if_not_exists("cryptography")
