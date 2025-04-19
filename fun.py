@@ -170,7 +170,7 @@ def response(request, gi):
                 password = read_file(path)
                 aad = pad_right(len(user), 4)
                 nonce = pad_right(days_since_2000(), 24)
-                if file_exists(path):
+                if not file_exists(path):
                     Answer = to_num(user + "/$$-0")
                     return Answer
                 passvar = crpt.decrypt_data(password, req, nonce, aad)
