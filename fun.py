@@ -309,7 +309,7 @@ def response(request, gi):
 
 def purse_request(request):
     if request == "0":
-        return 0, False
+        return "0", False
     if request[0:2] == "11":
         return str(request[2:]), False
     elif request[0:2] == "10":
@@ -324,7 +324,7 @@ def purse_request(request):
         serverid = to_txt(serverid)
         user = to_txt(user)
         if serverid != value.username:
-            return 0
+            return "0"
         return str(request[0:i]), True
 
 

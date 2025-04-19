@@ -15,7 +15,8 @@ elif value.project_client[gi] == "tw":
 @events.event
 def on_set(activity): #Called when a cloud var is set
     print(f"Variable {activity.var} was set to the value {activity.value} at {activity.timestamp}")
-    fun.set_cloud(activity.var, fun.response(activity.value, gi), gi)
+    response = fun.response(activity.value, gi)
+    fun.set_cloud(activity.var, response, gi)
     # To get the user who set the variable, call activity.load_log_data() which saves the username to the activity.username attribute
 
 @events.event
