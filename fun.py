@@ -324,7 +324,7 @@ def purse_request(request):
         serverid = to_txt(serverid)
         user = to_txt(user)
         if serverid != value.username:
-            return "0"
+            return "0", False
         return str(request[0:i]), True
 
 
@@ -335,7 +335,6 @@ def set_cloud (n,num:int, gi):
     elif value.project_client[gi] == "tw":
         msg ="SCS project server by" + value.username + " on Scratch"
         conn = scratch3.get_tw_cloud(value.project_id[gi], contact=msg)
-    print(num)
     conn.set_var(n,num)
 
 
