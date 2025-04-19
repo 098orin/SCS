@@ -167,7 +167,7 @@ def response(request, gi):
                         Answer = to_num(user + "/-1")
 
             elif code == "110":
-                path = datadir + "/about/" + str(id) + "password.txt"
+                path = datadir + "/password/" + user + "password.txt"
                 password = read_file(path)
                 aad = pad_right(len(user), 4)
                 nonce = pad_right(days_since_2000(), 24)
