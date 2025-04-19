@@ -80,7 +80,6 @@ def response(request, gi):
     if request != "0": #not None
         code = request[0:3]
         req = to_txt(request[3:len(request)])
-        print(req)
 
         user = ""
         for i in range(len(req)):
@@ -109,12 +108,12 @@ def response(request, gi):
             print("400 Bad request")
             print("サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
             print("project id が正しい場合、プロジェクトに不備がある可能性があります。")
-            print("プロジェクト側の@server_idが正しく自分の`value.py`のusernameと一致していることを確認してください。")
+            print("プロジェクトの初期化関数をcheckしてください。")
             print("===")
             Answer = str(user) + to_num("/" + "-1")
-            print(req)
-            print(code)
-            print(user)
+        print(req)
+        print(code)
+        print(user)
                 
         if code[0] == "1":
             # no id
