@@ -335,7 +335,8 @@ def set_cloud (n,num:int, gi):
     elif value.project_client[gi] == "tw":
         msg ="SCS project server by" + value.username + " on Scratch"
         conn = scratch3.get_tw_cloud(value.project_id[gi], contact=msg)
-    conn.set_var(n,int(num))
+    print(num)
+    conn.set_var(n,num)
 
 
 def count_files(path):
