@@ -111,6 +111,7 @@ def response(request, gi):
             print("プロジェクトの初期化関数をcheckしてください。")
             print("===")
             Answer = str(user) + to_num("/" + "-1")
+            return
         print(req)
         print(code)
         print(user)
@@ -297,6 +298,8 @@ def purse_request(request):
     if request[0:2] == "11":
         return str(request[2:]), False
     elif request[0:2] == "10":
+        serverid = ""
+        user = ""
         request = str(request[2:])
         i = len(request)
         while request[i-2:i] != "10":
