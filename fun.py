@@ -90,7 +90,7 @@ def response(request, gi):
         
         temp = i + 1
         var = ""
-        for i in range(len(req)):
+        for i in range(len(req)-temp):
             i += temp
             if req[i] == "/":
                 break
