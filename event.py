@@ -14,7 +14,9 @@ elif value.project_client[gi] == "tw":
 
 @events.event
 def on_set(activity): #Called when a cloud var is set
-    print(f"Variable {activity.var} was set to the value {activity.value} at {activity.timestamp}")
+    print(f"{activity.user} set variable {activity.var} to {activity.value} at {activity.timestamp}")
+    if activity.user == value.username:
+        return # Ignore your own changes
     response = fun.response(activity.value, gi)
     print(f"Response: {response}")
     fun.set_cloud(activity.var, response, gi)
