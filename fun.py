@@ -183,18 +183,18 @@ def response(request, gi):
                 path = datadir + "/about/" + id + "/about.txt"
                 file = str(read_file_lines(path)[0])
                 if file == None:
-                    Answer = to_num(id + "/-0")
+                    Answer = id + "/-0"
                 else:
-                    Answer = to_num(id + "/" + file)
+                    Answer = id + "/" + file
                         
             elif code[2] == "1":
                 print("get point")
                 path = datadir + "/about/" + id + "/about.txt"
                 file = str(read_file_lines(path)[1])
                 if file == None:
-                    Answer = to_num(id + "/-0")
+                    Answer = id + "/-0"
                 else:
-                    Answer = to_num(id + "/" + file)
+                    Answer = id + "/" + file
             elif code[2] == "2":
                 # TO DO
                 print("TO DO")
