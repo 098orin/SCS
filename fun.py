@@ -118,36 +118,35 @@ def response(request, gi):
         if code[0] == "1":
             # no id
             print('no id')
-            if code[1] == "0":
-                if code[2] == "0":
-                    print("get id")
-                    path = datadir + "/id/" + user + ".txt"
-                    id = read_file(path)
-                    if not file_exists(path):
-                        Answer = user + "/-1"
-                    else:
-                        Answer = user + "/" + str(id)
+            if code == "100":
+                print("get id")
+                path = datadir + "/id/" + user + ".txt"
+                id = read_file(path)
+                if not file_exists(path):
+                    Answer = user + "/-1"
+                else:
+                    Answer = user + "/" + str(id)
 
-                elif code == "101":
-                    # make id
-                    print ("make id") 
-                    if value.project_privilege[gi] != "high":
-                        print("Error: projectに十分な権限がありません")
-                        Answer = user + "/-1"
-                        print(Answer)
-                        return Answer
-                    path = datadir + "/id/" + user + ".txt"
+            elif code == "101":
+                # make id
+                print ("make id") 
+                if value.project_privilege[gi] != "high":
+                    print("Error: projectに十分な権限がありません")
+                    Answer = user + "/-1"
+                    print(Answer)
+                    return Answer
+                path = datadir + "/id/" + user + ".txt"
+                print(path)
+                if os.path.isfile(path):
+                    Answer = to_num(user + "/-1")
+                else:
+                    id = count_files(datadir + "/id/") + 1
+                    write_file(path, id)
+                    path = datadir + "/about/" + str(id) + "/about.txt"
                     print(path)
-                    if os.path.isfile(path):
-                        Answer = to_num(user + "/-1")
-                    else:
-                        id = count_files(datadir + "/id/") + 1
-                        write_file(path, id)
-                        path = datadir + "/about/" + str(id) + "/about.txt"
-                        print(path)
-                        content = "1\n100"
-                        write_file(path, content)
-                        Answer = to_num(user + "/" + str(id))
+                    content = "1\n100"
+                    write_file(path, content)
+                    Answer = to_num(user + "/" + str(id))
 
             elif code == "110":
                 path = datadir + "/password/" + user + "password.txt"
