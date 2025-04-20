@@ -122,8 +122,10 @@ def response(request, gi):
                 if code[2] == "0":
                     path = datadir + "/id/" + user + ".txt"
                     id = read_file(path)
-                    if id == None:
-                        pass
+                    if not file_exists(path):
+                        Answer = to_num(user + "/-1")
+                    else:
+                        Answer = to_num(user + "/" + str(id))
 
                 elif code == "101":
                     # make id
