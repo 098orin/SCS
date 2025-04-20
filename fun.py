@@ -123,9 +123,9 @@ def response(request, gi):
                     path = datadir + "/id/" + user + ".txt"
                     id = read_file(path)
                     if not file_exists(path):
-                        Answer = to_num(user + "/-1")
+                        Answer = user + "/-1"
                     else:
-                        Answer = to_num(user + "/" + str(id))
+                        Answer = user + "/" + str(id)
 
                 elif code == "101":
                     # make id
@@ -185,10 +185,10 @@ def response(request, gi):
                     all_sessionid.append(str(sessionid))
                     write_file(datadir + "/sessionid/all_ids.txt", all_sessionid)
                     write_file(datadir + "/sessionid/all_users.txt", user)
-                    Answer = to_num(user + "/1/" + str(sessionid))
+                    Answer = user + "/1/" + str(sessionid)
                 else:
                     print("パスワードが間違っています")
-                    Answer = to_num(user + "/$$-1")
+                    Answer = user + "/$$-1"
 
                          
         elif code[0] == "2":
@@ -307,7 +307,7 @@ def response(request, gi):
                 else:
                     Answer = id + to_num("/" + "-1")
         print(Answer)
-        return Answer
+        return to_num(Answer)
 
 def purse_request(request):
     if request == "0":
