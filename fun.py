@@ -120,6 +120,7 @@ def response(request, gi):
             print('no id')
             if code[1] == "0":
                 if code[2] == "0":
+                    print("get id")
                     path = datadir + "/id/" + user + ".txt"
                     id = read_file(path)
                     if not file_exists(path):
@@ -132,7 +133,7 @@ def response(request, gi):
                     print ("make id") 
                     if value.project_privilege[gi] != "high":
                         print("Error: projectに十分な権限がありません")
-                        Answer = to_num(user + "/-1")
+                        Answer = user + "/-1"
                         print(Answer)
                         return Answer
                     path = datadir + "/id/" + user + ".txt"
@@ -147,25 +148,6 @@ def response(request, gi):
                         content = "1\n100"
                         write_file(path, content)
                         Answer = to_num(user + "/" + str(id))
-
-
-                elif code == "102":
-                    # 認証
-                    if value.project_client[gi] == "tw":
-                        print("認証")
-                        if tw_認証.get(str(user)) == 1:
-                            Answer = user + to_num("/1")
-                            print (1)
-                            del tw_認証[str(user)]
-                            print (0)
-
-                elif code == "103":
-                    print("認証")
-                    if value.project_client[gi] == "sc":
-                        tw_認証[str(user)] = 1
-                        Answer = to_num(user + "/-1")
-                    else:
-                        Answer = to_num(user + "/-1")
 
             elif code == "110":
                 path = datadir + "/password/" + user + "password.txt"
