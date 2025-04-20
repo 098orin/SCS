@@ -111,6 +111,7 @@ def response(request, gi):
             print("プロジェクトの初期化関数をcheckしてください。")
             print("===")
             Answer = str(user) + to_num("/" + "-1")
+            print(server_id)
             return
         print(req)
         print(code)
