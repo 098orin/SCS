@@ -170,7 +170,8 @@ def response(request, gi):
                 else:
                     print("パスワードが間違っています")
                     Answer = user + "/$$-1"
-
+            else:
+                print("未定義動作")
                          
         elif code[0] == "2":
             # have id
@@ -309,16 +310,23 @@ def purse_request(request):
         if serverid != value.username:
             return "0", False
         return str(request[0:i]), True
+    else:
+        return "0", False
 
 
 def set_cloud (n,num:int, gi):
-    conn = session.connect_cloud(value.project_id[gi])
-    if value.project_client[gi] == "sc":
+    if num == None:
+        num = 0
+    try:
         conn = session.connect_cloud(value.project_id[gi])
-    elif value.project_client[gi] == "tw":
-        msg ="SCS project server by" + value.username + " on Scratch"
-        conn = scratch3.get_tw_cloud(value.project_id[gi], contact=msg)
-    conn.set_var(n,num)
+        if value.project_client[gi] == "sc":
+            conn = session.connect_cloud(value.project_id[gi])
+        elif value.project_client[gi] == "tw":
+            msg ="SCS project server by" + value.username + " on Scratch"
+            conn = scratch3.get_tw_cloud(value.project_id[gi], contact=msg)
+        conn.set_var(n,num)
+    except Exception as error:
+        print("Error: " + str(error))
 
 
 def count_files(path):
