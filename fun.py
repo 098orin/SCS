@@ -79,7 +79,7 @@ def response(request, gi):
 
     if request != "0": #not None
         code = request[0:3]
-        req = to_txt(request[3:len(request)])
+        req = to_txt(request[3:])
 
         user = ""
         for i in range(len(req)):
@@ -103,7 +103,9 @@ def response(request, gi):
             if req[i] == "/":
                 break
             server_id = req[i] + server_id
-
+        print(req)
+        print(code)
+        print(user)
         if server_id != value.username and server_id != "all":
             print("400 Bad request")
             print("サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
@@ -112,10 +114,8 @@ def response(request, gi):
             print("===")
             Answer = str(user) + to_num("/" + "-1")
             print(server_id)
-            return
-        print(req)
-        print(code)
-        print(user)
+            return 
+
                 
         if code[0] == "1":
             # no id
