@@ -116,9 +116,10 @@ def response(request, gi):
             print(server_id)
             return 
 
-                
+        header = "11"
         if code[0] == "1":
             # no id
+            header = "10"
             print('no id')
             if code == "100":
                 print("get id")
@@ -290,8 +291,8 @@ def response(request, gi):
                     file.close()
                 else:
                     Answer = id + to_num("/" + "-1")
-        print(Answer)
-        return to_num(Answer)
+        print(header + ", " + Answer)
+        return to_num(header + Answer)
 
 def purse_request(request):
     if request == "0":
