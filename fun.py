@@ -118,6 +118,9 @@ def response(request, gi):
         else:
             header = "1"
         header = header + "1"
+        if code[0] != "1":
+            id = str(user)
+
         if code[0] == "1":
             # no id
             header = header[0] + "0"
@@ -199,7 +202,6 @@ def response(request, gi):
         elif code[0] == "2":
             # have id
             console.log("have id")
-            id = str(user)
             # 未実装
             if code[2] == "0":
                 console.log("get status")
