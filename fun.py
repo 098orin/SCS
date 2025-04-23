@@ -279,7 +279,7 @@ def response(request, gi):
                     Answer = id + "/-1"
                     console.log(Answer)
                     return Answer
-                path = datadir + "/about/" + id + "/about.txt"
+                path = datadir + "/about/" + id + "/login.txt"
                 if file_exists(path):
                     logintime = float(read_file_lines(path)[0])
                 else:
@@ -296,11 +296,11 @@ def response(request, gi):
                     f.close
 
                     console.log("上書き")
-                    file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "w")
+                    file = open(datadir + "/about/" + id + "/login.txt", "w")
                     file.write(str(time.time()/86400))
                     file.close()
                 else:
-                    Answer = id + to_num("/" + "-1")
+                    Answer = id + "/" + "-1"
         console.log(header + ", " + Answer)
         return header + to_num(Answer)
 
