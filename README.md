@@ -24,9 +24,9 @@ project_privilege = [project_privileges]   # 信頼できるprojectは"high", �
 
 # Run
 実行にはpython3.8以上が必要です。それ以外は必要ありません。管理者権限があるとなお良いです。
-一応すべてのOSで動くように作っていますが、動作確認はWindwsとLinuxのみです。
+一応すべてのOSで動くように作っていますが、動作確認はWindowsとLinuxのみです。
 
-Windws, macOS, Linux
+Windows, macOS, Linux
 ```bash
 cd SCS
 python _server.py
