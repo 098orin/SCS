@@ -115,11 +115,14 @@ def response(request, gi):
             Answer = str(user) + to_num("/" + "-1")
             print(server_id)
             return 
-
-        header = "11"
+        if safe:
+            header = "2"
+        else:
+            header = "1"
+        header = header + "1"
         if code[0] == "1":
             # no id
-            header = "10"
+            header = header + "0"
             print('no id')
             if code == "100":
                 print("get id")
