@@ -276,12 +276,12 @@ def response(request, gi):
                 console.log("get log-in point")
                 if value.project_privilege[gi] != "high":
                     console.log("Error: projectに十分な権限がありません")
-                    Answer = to_num(user + "/-1")
+                    Answer = id + "/-1"
                     console.log(Answer)
                     return Answer
                 path = datadir + "/about/" + id + "/about.txt"
                 if file_exists(path):
-                    logintime: float = read_file_lines(path)
+                    logintime: float = read_file_lines(path)[0]
                 else:
                     logintime = 0.0
                     write_file(path, "0")
