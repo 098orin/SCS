@@ -120,7 +120,7 @@ def response(request, gi):
         header = header + "1"
         if code[0] == "1":
             # no id
-            header = header + "0"
+            header = header[0] + "0"
             console.log('no id')
             if code == "100":
                 console.log("get id")
