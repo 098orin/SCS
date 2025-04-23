@@ -281,7 +281,7 @@ def response(request, gi):
                     return Answer
                 path = datadir + "/about/" + id + "/about.txt"
                 if file_exists(path):
-                    logintime: float = read_file_lines(path)[0]
+                    logintime = float(read_file_lines(path)[0])
                 else:
                     logintime = 0.0
                     write_file(path, "0")
