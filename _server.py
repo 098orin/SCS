@@ -49,6 +49,9 @@ if response.status_code == 200: # ステータスコードを確認
 else:
     print(f"Error: {response.status_code}")
 
+print("Don't shutdown the program before the listener is set up.")
+print("イベントリスナーのセッティングが完了するまで絶対にサーバーを終了させないでください。")
+
 print("サーバーを起動中...")
 
 import value
@@ -69,7 +72,6 @@ val_hash_old = hash(file.read())
 file.close()
 
 i = 1
-print("Done!")
 
 from rich.progress import Progress
 
@@ -106,7 +108,6 @@ for i in range(len(value.project_id)):
     com = f"python {value.path}/event.py {i}"
     coms.append(com)
 print(coms)
-
 # スレッドを作成してプロセスを実行
 try:
     while True:
@@ -117,6 +118,7 @@ try:
             thread = threading.Thread(target=process.wait)  # プロセスが終了するのを待つスレッド
             threads.append(thread)
             thread.start()
+        print("Done!")
 
         for thread in threads:
             thread.join()
