@@ -71,6 +71,8 @@ file.close()
 i = 1
 print("Done!")
 
+from rich.progress import Progress
+
 import threading
 import subprocess
 import sys
@@ -81,13 +83,20 @@ coms = []
 threads = []
 processes = []
 
-def signal_handler(sig, frame):
-    print("\nサーバーを終了します...")
-
+def cleanup():
+    print("\nCtrl+C を検知。サーバーを終了します...")
     for process in processes:
-        process.terminate() # プロセスを終了する
-
+        if process.poll() is None:  # プロセスがまだ実行中なら
+            process.terminate()
+            process.kill()  # 強制終了
+    print("Waiting for threads to finish...")
+    for thread in threads:
+        thread.join(timeout=5) # スレッドの終了を待つ
     print("サーバーを正常に終了しました。")
+
+# Ctrl+C を検知するためのシグナルハンドラ
+def signal_handler(signum, frame):
+    cleanup()
     sys.exit(0)
 
 # シグナルハンドラの設定
@@ -99,20 +108,23 @@ for i in range(len(value.project_id)):
 print(coms)
 
 # スレッドを作成してプロセスを実行
-while True:
-    for cmd in coms:
-        process = subprocess.Popen(cmd, shell=True, text=True)
-        processes.append(process)  # プロセスをリストに追加
+try:
+    while True:
+        for cmd in coms:
+            process = subprocess.Popen(cmd, shell=True, text=True)
+            processes.append(process)  # プロセスをリストに追加
 
-        thread = threading.Thread(target=process.wait)  # プロセスが終了するのを待つスレッド
-        threads.append(thread)
-        thread.start()
+            thread = threading.Thread(target=process.wait)  # プロセスが終了するのを待つスレッド
+            threads.append(thread)
+            thread.start()
 
-    for thread in threads:
-        thread.join()
+        for thread in threads:
+            thread.join()
 
-    time.sleep(5)
-
+        time.sleep(5)
+except KeyboardInterrupt:
+    cleanup()
+    sys.exit(0)
 # print("サーバーを終了しました。")
 
 
