@@ -8,11 +8,12 @@ from datetime import datetime
 
 import crpt
 
+from rich.console import Console
 import scratchattach as scratch3
 
 # global i2
 
-pdata = {}
+console = Console()
 
 session = scratch3.login(value.username, value.password)
 
@@ -39,7 +40,7 @@ def to_txt(number):
                 num = int(number[i])
         return Answer
     except Exception as error:
-        print("In to_txt():" + error)
+        console.log("In to_txt():" + error)
         return number
 
 def to_num(intxt):
@@ -65,7 +66,7 @@ def getcloudvalues(id, i):
     return request
 
 def response_cloudvalues (repuest, gi):
-    print(repuest)
+    console.log(repuest)
     if repuest:
         i = 0
         for n in list(repuest):
@@ -103,17 +104,17 @@ def response(request, gi):
             if req[i] == "/":
                 break
             server_id = req[i] + server_id
-        print(req)
-        print(code)
-        print(user)
+        console.log(req)
+        console.log(code)
+        console.log(user)
         if server_id != value.username and server_id != "all":
-            print("400 Bad request")
-            print("サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
-            print("project id が正しい場合、プロジェクトに不備がある可能性があります。")
-            print("プロジェクトの初期化関数をcheckしてください。")
-            print("===")
+            console.log("400 Bad request")
+            console.log("サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
+            console.log("project id が正しい場合、プロジェクトに不備がある可能性があります。")
+            console.log("プロジェクトの初期化関数をcheckしてください。")
+            console.log("===")
             Answer = str(user) + to_num("/" + "-1")
-            print(server_id)
+            console.log(server_id)
             return 
         if safe:
             header = "2"
@@ -123,9 +124,9 @@ def response(request, gi):
         if code[0] == "1":
             # no id
             header = header + "0"
-            print('no id')
+            console.log('no id')
             if code == "100":
-                print("get id")
+                console.log("get id")
                 path = datadir + "/id/" + user + ".txt"
                 id = read_file(path)
                 if not file_exists(path):
@@ -135,21 +136,21 @@ def response(request, gi):
 
             elif code == "101":
                 # make id
-                print ("make id") 
+                console.log ("make id") 
                 if value.project_privilege[gi] != "high":
-                    print("Error: projectに十分な権限がありません")
+                    console.log("Error: projectに十分な権限がありません")
                     Answer = user + "/-1"
-                    print(Answer)
+                    console.log(Answer)
                     return Answer
                 path = datadir + "/id/" + user + ".txt"
-                print(path)
+                console.log(path)
                 if os.path.isfile(path):
                     Answer = user + "/-1"
                 else:
                     id = count_files(datadir + "/id/") + 1
                     write_file(path, id)
                     path = datadir + "/about/" + str(id) + "/about.txt"
-                    print(path)
+                    console.log(path)
                     content = "1\n100"
                     write_file(path, content)
                     Answer = user + "/" + str(id)
@@ -164,7 +165,7 @@ def response(request, gi):
                     return Answer
                 passvar = crpt.decrypt_data(password, req, nonce, aad)
                 if password == passvar:
-                    print("パスワードが一致しました")
+                    console.log("パスワードが一致しました")
                     sessionid = os.urandom(16).hex()
                     all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
                     all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
@@ -179,18 +180,18 @@ def response(request, gi):
                     write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
                     Answer = user + "/1/" + str(sessionid)
                 else:
-                    print("パスワードが間違っています")
+                    console.log("パスワードが間違っています")
                     Answer = user + "/$$-1"
             else:
-                print("未定義動作")
+                console.log("未定義動作")
                          
         elif code[0] == "2":
             # have id
-            print("have id")
+            console.log("have id")
             id = str(user)
             # 未実装
             if code[2] == "0":
-                print("get status")
+                console.log("get status")
                 path = datadir + "/about/" + id + "/about.txt"
                 file = str(read_file_lines(path)[0])
                 if file == None:
@@ -199,7 +200,7 @@ def response(request, gi):
                     Answer = id + "/" + file
                         
             elif code[2] == "1":
-                print("get point")
+                console.log("get point")
                 path = datadir + "/about/" + id + "/about.txt"
                 file = str(read_file_lines(path)[1])
                 if file == None:
@@ -208,83 +209,83 @@ def response(request, gi):
                     Answer = id + "/" + file
             elif code[2] == "2":
                 # TO DO
-                print("TO DO")
+                console.log("TO DO")
 
 
         elif code[0] == "3":
-            print ("global file")
+            console.log ("global file")
             if code[2] == "0":
-                print("look file")
+                console.log("look file")
 
                 # 未実装
 
             elif code[2] == "1":
-                print("== file ? (bool)")
+                console.log("== file ? (bool)")
 
                 # 未実装
             elif code[2] == "2":
-                print("count files")
+                console.log("count files")
                 path = datadir + ""
                 Answer = id + to_num( "/" + sum(os.path.isfile(os.path.join(path, name)) for name in os.listdir(path)) )
                 # 未実装
 
             elif code[2] == "3":
-                print("list files")
+                console.log("list files")
 
                 # 未実装
 
 
                 
         elif code[0] == "4":
-            print("projects file")
+            console.log("projects file")
             if code[2] == "0":
-                print("look file")
+                console.log("look file")
 
                 # 未実装
 
             elif code[2] == "1":
-                print("== file ? (bool)")
+                console.log("== file ? (bool)")
 
                 # 未実装
                 
         elif code[0] == "5":
             if code[2] == "0":
-                print ("mkdir")
+                console.log ("mkdir")
 
                 # 未実装
                     
             elif code[2] == "1":
-                print("to do")
+                console.log("to do")
 
         elif code[0] == "6":
-            print("point")
+            console.log("point")
             if code[2] == "0":
-                print("get log-in point")
+                console.log("get log-in point")
                 if value.project_privilege[gi] != "high":
-                    print("Error: projectに十分な権限がありません")
+                    console.log("Error: projectに十分な権限がありません")
                     Answer = to_num(user + "/-1")
-                    print(Answer)
+                    console.log(Answer)
                     return Answer
                 try:
                     f = open(datadir + "/about/" + to_txt(id) + "/login.txt", "r")
                     logintime = float(f.readline())
                     f.close()
                 except Exception as error:
-                    print(error)
+                    console.log(error)
                     try:
-                        print("新規作成")
+                        console.log("新規作成")
                         logintime = 0.0
                         file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "x")
                         file.write("0")
                         file.close()
                     except FileExistsError:
-                        print("fileの内容を修正")
+                        console.log("fileの内容を修正")
                         file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "w")
                         file.write("0")
                         file.close()
 
                 if time.time()/86400 - logintime >= 1.0:
-                    print("ログインポイントを更新")
+                    console.log("ログインポイントを更新")
                     path = datadir + "/about/" + to_txt(id) + "/about.txt"
                     file = read_file_lines(path)[1]
                     Answer = id + to_num("/" + str(float(file) + 3.0))
@@ -293,13 +294,13 @@ def response(request, gi):
                     f.write(str(file[0].rstrip()) + "\n" + str(float(file) + 3.0) )
                     f.close
 
-                    print("上書き")
+                    console.log("上書き")
                     file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "w")
                     file.write(str(time.time()/86400))
                     file.close()
                 else:
                     Answer = id + to_num("/" + "-1")
-        print(header + ", " + Answer)
+        console.log(header + ", " + Answer)
         return header + to_num(Answer)
 
 def purse_request(request):
@@ -339,7 +340,7 @@ def set_cloud (n,num:int, gi):
             conn = scratch3.get_tw_cloud(value.project_id[gi], contact=msg)
         conn.set_var(n,num)
     except Exception as error:
-        print("Error: " + str(error))
+        console.log("Error: " + str(error))
 
 
 def count_files(path):
@@ -348,7 +349,7 @@ def count_files(path):
         files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
         return len(files)
     except FileNotFoundError:
-        print("指定したパスが見つかりません。")
+        console.log("指定したパスが見つかりません。")
         return 0
 
 def write_file(path, txt):
@@ -359,9 +360,9 @@ def write_file(path, txt):
     try:
         with open(path, 'w') as file:
             file.write(txt)
-        print(f"{path} にファイルを作成")
+        console.log(f"{path} にファイルを作成")
     except Exception as e:
-        print(f"Error: {e}")
+        console.log(f"Error: {e}")
 
 def read_file(path):
     """
@@ -378,9 +379,9 @@ def read_file(path):
             content = file.read()  # ファイルの全内容を読む
         return content
     except FileNotFoundError:
-        print(f"{path} は見つかりませんでした。")
+        console.log(f"{path} は見つかりませんでした。")
     except Exception as e:
-        print(f"エラーが発生しました: {e}")
+        console.log(f"エラーが発生しました: {e}")
 
 def read_file_lines(file_path):
     try:
@@ -388,9 +389,9 @@ def read_file_lines(file_path):
             lines = file.readlines()  # 各行をリストとして読む
         return lines
     except FileNotFoundError:
-        print(f"{file_path} は見つかりませんでした。")
+        console.log(f"{file_path} は見つかりませんでした。")
     except Exception as e:
-        print(f"エラーが発生しました: {e}")
+        console.log(f"エラーが発生しました: {e}")
 
 def file_exists(path):
   return os.path.exists(path)
