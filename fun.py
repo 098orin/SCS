@@ -186,7 +186,7 @@ def response(request, gi):
                 console.log("set password")
                 path = datadir + "/password/" + user + "password.txt"
                 if value.project_privilege[gi] != "password":
-                    console.log("Error: projectに十分な権限がありません")
+                    console.log("Error: projectに権限がありません")
                     Answer = user + "/-1"
                     console.log(Answer)
                     return Answer
