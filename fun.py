@@ -292,7 +292,7 @@ def response(request, gi):
                 else:
                     Answer = id + to_num("/" + "-1")
         print(header + ", " + Answer)
-        return to_num(header + Answer)
+        return header + to_num(Answer)
 
 def purse_request(request):
     if request == "0":
