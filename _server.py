@@ -54,7 +54,7 @@ except Exception as e:
 print("Don't shutdown the program before the listener is set up.")
 print("イベントリスナーのセッティングが完了するまで絶対にサーバーを終了させないでください。")
 
-print("サーバーを起動中...")
+print("\nサーバーを起動中...")
 
 import value
 import tools
