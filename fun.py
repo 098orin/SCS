@@ -141,7 +141,7 @@ def response(request, gi):
                 path = datadir + "/id/" + user + ".txt"
                 print(path)
                 if os.path.isfile(path):
-                    Answer = to_num(user + "/-1")
+                    Answer = user + "/-1"
                 else:
                     id = count_files(datadir + "/id/") + 1
                     write_file(path, id)
@@ -149,7 +149,7 @@ def response(request, gi):
                     print(path)
                     content = "1\n100"
                     write_file(path, content)
-                    Answer = to_num(user + "/" + str(id))
+                    Answer = user + "/" + str(id)
 
             elif code == "110":
                 path = datadir + "/password/" + user + "password.txt"
@@ -157,7 +157,7 @@ def response(request, gi):
                 aad = pad_right(len(user), 4)
                 nonce = pad_right(days_since_2000(), 24)
                 if not file_exists(path):
-                    Answer = to_num(user + "/$$-0")
+                    Answer = user + "/$$-0"
                     return Answer
                 passvar = crpt.decrypt_data(password, req, nonce, aad)
                 if password == passvar:
