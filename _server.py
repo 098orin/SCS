@@ -1,16 +1,25 @@
 import os
 import requests
+import ctypes
 
 version = "2.0 - β.2.1"
 print("Server version: v." + version)
 
+def is_admin():
+    if os.name == "nt":
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+    else:
+        return os.geteuid() == 0
+
 try:
-    if os.geteuid() == 0:
+    if is_admin():
         print("管理者権限で実行中です")
     else:
         print("非管理者権限で実行中です")
-except Exception as error:
-        print(error)
+        print("管理者権限で実行することが推奨されています")
+except Exception as e:
+    print("実行権限の確認中にエラーが発生しました")
+    print(f"Error: {e}")
 
 print("更新を確認...")
 url = "https://raw.githubusercontent.com/098orin/SCS/main/README.md"
@@ -101,7 +110,7 @@ while True:
     for thread in threads:
         thread.join()
 
-    time.sleep(10)
+    time.sleep(5)
 
 # print("サーバーを終了しました。")
 
