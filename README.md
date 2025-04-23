@@ -1,4 +1,4 @@
-version v.2.0 - β.2.1
+version v.2.0β
 # SCS (Sratch Cloud System)
 これはscratch projectと外部での通信を可能にするためのサーバープログラムです。
 

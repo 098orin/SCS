@@ -2,7 +2,7 @@ import os
 import requests
 import ctypes
 
-version = "2.0 - β.2.1"
+version = "2.0β"
 print("Server version: v." + version)
 
 def is_admin():
@@ -23,31 +23,33 @@ except Exception as e:
 
 print("更新を確認...")
 url = "https://raw.githubusercontent.com/098orin/SCS/main/README.md"
-response = requests.get(url)
+try:
+    response = requests.get(url)
+    if response.status_code == 200: # ステータスコードを確認
+        f_line = response.text.splitlines()[0]
+        now_version = f_line[10:len(f_line)]
+        if now_version != version:
 
-if response.status_code == 200: # ステータスコードを確認
-    f_line = response.text.splitlines()[0]
-    now_version = f_line[10:len(f_line)]
-    if now_version != version:
-
-        print("新しいバージョンがあります: v." + now_version)
-        print("新しいバージョンをインストールしますか?(y/n)")
-        an = input()
-        if an.lower() == "y":
-            try:
-                os.system("sudo git pull")
-                print("プログラムを更新しました。")
-            except:
+            print("新しいバージョンがあります: v." + now_version)
+            print("新しいバージョンをインストールしますか?(y/n)")
+            an = input()
+            if an.lower() == "y":
                 try:
-                    os.system("git pull")
+                    os.system("sudo git pull")
                     print("プログラムを更新しました。")
-                except Exception as error:
-                    print(f"Error: error")
+                except:
+                    try:
+                        os.system("git pull")
+                        print("プログラムを更新しました。")
+                    except Exception as error:
+                        print(f"Error: error")
+        else:
+            print("更新はありません。")
     else:
-        print("更新はありません。")
-
-else:
-    print(f"Error: {response.status_code}")
+        print(f"Error: {response.status_code}")
+except Exception as e:
+    print("更新の確認中にエラーが発生しました")
+    print(f"Error: {e}")
 
 print("Don't shutdown the program before the listener is set up.")
 print("イベントリスナーのセッティングが完了するまで絶対にサーバーを終了させないでください。")
