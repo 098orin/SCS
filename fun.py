@@ -1,7 +1,6 @@
 # from email.policy import default
 import value
-# import global_value as g
-import json
+# import json
 import time
 import os
 from datetime import datetime
@@ -10,8 +9,6 @@ import crpt
 
 from rich.console import Console
 import scratchattach as scratch3
-
-# global i2
 
 console = Console()
 
@@ -182,6 +179,20 @@ def response(request, gi):
                 else:
                     console.log("パスワードが間違っています")
                     Answer = user + "/$$-1"
+            elif code == "111":
+                console.log("set password")
+                path = datadir + "/password/" + user + "password.txt"
+                if value.project_privilege[gi] != "high":
+                    console.log("Error: projectに十分な権限がありません")
+                    Answer = user + "/-1"
+                    console.log(Answer)
+                    return Answer
+                if file_exists(path):
+                    console.log("Error: password file already exists")
+                    Answer = user + "/-0"
+                    return Answer
+                console.log("TODO")
+                pass
             else:
                 console.log("未定義動作")
                          
@@ -266,29 +277,17 @@ def response(request, gi):
                     Answer = to_num(user + "/-1")
                     console.log(Answer)
                     return Answer
-                try:
-                    f = open(datadir + "/about/" + to_txt(id) + "/login.txt", "r")
-                    logintime = float(f.readline())
-                    f.close()
-                except Exception as error:
-                    console.log(error)
-                    try:
-                        console.log("新規作成")
-                        logintime = 0.0
-                        file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "x")
-                        file.write("0")
-                        file.close()
-                    except FileExistsError:
-                        console.log("fileの内容を修正")
-                        file = open(datadir + "/about/" + to_txt(id) + "/login.txt", "w")
-                        file.write("0")
-                        file.close()
-
+                path = datadir + "/about/" + id + "/about.txt"
+                if file_exists(path):
+                    logintime: float = read_file_lines(path)
+                else:
+                    logintime = 0.0
+                    write_file(path, "0")
                 if time.time()/86400 - logintime >= 1.0:
                     console.log("ログインポイントを更新")
-                    path = datadir + "/about/" + to_txt(id) + "/about.txt"
+                    path = datadir + "/about/" + id + "/about.txt"
                     file = read_file_lines(path)[1]
-                    Answer = id + to_num("/" + str(float(file) + 3.0))
+                    Answer = id + "/" + str(float(file) + 3.0)
 
                     f = open(path, "w")
                     f.write(str(file[0].rstrip()) + "\n" + str(float(file) + 3.0) )
