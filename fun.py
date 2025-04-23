@@ -166,12 +166,17 @@ def response(request, gi):
                 if password == passvar:
                     print("パスワードが一致しました")
                     sessionid = os.urandom(16).hex()
-                    all_sessionid = read_file_lines(datadir + "/sessionid/all_ids.txt")
+                    all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
+                    all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
+                    all_sessiontimestamp = read_file_lines(datadir + "/session/all_timestamps.txt")
                     while sessionid in all_sessionid:
                         sessionid = os.urandom(16).hex()
                     all_sessionid.append(str(sessionid))
-                    write_file(datadir + "/sessionid/all_ids.txt", all_sessionid)
-                    write_file(datadir + "/sessionid/all_users.txt", user)
+                    all_sessionuser.append(user)
+                    all_sessiontimestamp.append(str(days_since_2000()))
+                    write_file(datadir + "/session/all_ids.txt", all_sessionid)
+                    write_file(datadir + "/session/all_users.txt", all_sessionuser)
+                    write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
                     Answer = user + "/1/" + str(sessionid)
                 else:
                     print("パスワードが間違っています")
