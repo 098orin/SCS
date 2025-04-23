@@ -182,7 +182,7 @@ def response(request, gi):
             elif code == "111":
                 console.log("set password")
                 path = datadir + "/password/" + user + "password.txt"
-                if value.project_privilege[gi] != "high":
+                if value.project_privilege[gi] != "password":
                     console.log("Error: projectに十分な権限がありません")
                     Answer = user + "/-1"
                     console.log(Answer)
@@ -194,7 +194,7 @@ def response(request, gi):
                 console.log("TODO")
                 pass
             else:
-                console.log("未定義動作")
+                console.log("未定義")
                          
         elif code[0] == "2":
             # have id

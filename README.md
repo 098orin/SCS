@@ -16,7 +16,7 @@ path = "your_path" # string このrepositoryの絶対path
 datadir = "data_directory_path" # string, "/SCS_data"の絶対パス
 project_id = [your_project_ids]   # 数字で普通にプロジェクトidを書いてください。
 project_client = [your_project_client]   # Scratchの場合は"sc", Turbowarpの場合は"tw"
-project_privilege = [project_privileges]   # 信頼できるprojectは"high", 普通のは"low"
+project_privilege = [project_privileges]   # 信頼できるprojectは"high", 普通のは"low", 例外あり
 ```
 `project_なんたら`はそれぞれのリストの内容の順番を合わせてください。
 
@@ -43,6 +43,7 @@ sudo python _server.py
 Scarcth側のdocumentは
 https://ja.scratch-wiki.info/wiki/%E5%88%A9%E7%94%A8%E8%80%85:Mario-098/ScratchCloudSystem
 を参照してください。
+なお、パスワードを使用した通信暗号化機能を使用したい場合は、project_privilegesを"password"に設定したprojectが必要です。"url(未定)"をremixしてください。
 
 # 今後の更新予定（TODO）
 * 通信暗号化（password）
