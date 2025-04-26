@@ -29,7 +29,8 @@ def set_log(name):
     if not file_exists(path):
         write_file(path, "")
     # ファイルにリダイレクトする
-    console = Console(file=open(path, "w"))
+    console = Console(file=open(path, "wt"))
+    console.rule(f"Report Generated {datetime.now().ctime()}")
 
     # 標準出力をリダイレクト
     sys.stdout = console
