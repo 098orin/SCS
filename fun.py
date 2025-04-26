@@ -25,8 +25,11 @@ watting = list()
 def set_log(name):
     global console
     global datadir
+    path = datadir + "/log_files/" + name + ".log"
+    if not file_exists(path):
+        write_file(path, "")
     # ファイルにリダイレクトする
-    console = Console(file=open(datadir + "/log_files/" + name + ".log", "w"))
+    console = Console(file=open(path, "w"))
 
     # 標準出力をリダイレクト
     sys.stdout = console

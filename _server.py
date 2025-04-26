@@ -111,7 +111,7 @@ for i in range(len(value.project_id)):
     com = f"python {value.path}/event.py {i}"
     coms.append(com)
 
-com = f"python {value.path}/session_manager.py {i}"
+com = f"python {value.path}/session_manager.py"
 coms.append(com)
 print(coms)
 
