@@ -92,6 +92,7 @@ def cleanup():
     for process in processes:
         if process.poll() is None:  # プロセスがまだ実行中なら
             process.terminate()
+            time.sleep(1)  # 1秒待機
             process.kill()  # 強制終了
     print("Waiting for threads to finish...")
     for thread in threads:
