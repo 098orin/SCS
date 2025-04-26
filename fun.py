@@ -142,7 +142,9 @@ def response(request, gi):
         header = header + "1"
         if code[0] != "1":
             id = str(user)
-            user = read_file_lines(datadir + "/about/" + id + "/username.txt", disp_err=False)[0]
+            path = datadir + "/about/" + id + "/username.txt"
+            if file_exists(path):
+                user = read_file_lines(path, disp_err=False)[0]
 
         if code[0] == "1":
             # no id
