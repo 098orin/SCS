@@ -124,7 +124,7 @@ def response(request, gi):
         console.log(code)
         console.log(user)
         if server_id != value.username and server_id != "all":
-            console.log("400 Bad request")
+            console.log("[red]400 Bad request[red]")
             console.log("サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
             console.log("project id が正しい場合、プロジェクトに不備がある可能性があります。")
             console.log("プロジェクトの初期化関数をcheckしてください。")
@@ -139,6 +139,8 @@ def response(request, gi):
         header = header + "1"
         if code[0] != "1":
             id = str(user)
+        else:
+            user = read_file_lines(datadir + "/about/" + id + "/username.txt", disp_er=False)[0]
 
         if code[0] == "1":
             # no id
@@ -146,6 +148,10 @@ def response(request, gi):
             console.log('no id')
             if code == "100":
                 console.log("get id")
+                path = datadir + "/about/" + id + "/username.txt"
+                if not file_exists(path):
+                    write_file(path, user)
+
                 path = datadir + "/id/" + user + ".txt"
                 id = read_file(path)
                 if not file_exists(path):
@@ -184,19 +190,23 @@ def response(request, gi):
                     return Answer
                 passvar = crpt.decrypt_data(password, req, nonce, aad)
                 if password == passvar:
-                    console.log("パスワードが一致しました")
+                    console.log("パスワードが一致しました。セッションを作成します。")
                     sessionid = os.urandom(16).hex()
                     all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
                     all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
                     all_sessiontimestamp = read_file_lines(datadir + "/session/all_timestamps.txt")
-                    while sessionid in all_sessionid:
-                        sessionid = os.urandom(16).hex()
-                    all_sessionid.append(str(sessionid))
-                    all_sessionuser.append(user)
-                    all_sessiontimestamp.append(str(days_since_2000()))
-                    write_file(datadir + "/session/all_ids.txt", all_sessionid)
-                    write_file(datadir + "/session/all_users.txt", all_sessionuser)
-                    write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
+                    if user in all_sessionuser:
+                        console.log("すでにセッションが存在しています。")
+                        sessionid = all_sessionid[all_sessionuser.index(user)]
+                    else:
+                        while sessionid in all_sessionid:
+                            sessionid = os.urandom(16).hex()
+                        all_sessionid.append(str(sessionid))
+                        all_sessionuser.append(user)
+                        all_sessiontimestamp.append(str(days_since_2000()))
+                        write_file(datadir + "/session/all_ids.txt", all_sessionid)
+                        write_file(datadir + "/session/all_users.txt", all_sessionuser)
+                        write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
                     Answer = user + "/1/" + str(sessionid)
                 else:
                     console.log("パスワードが間違っています")
@@ -255,11 +265,10 @@ def response(request, gi):
                 console.log("== file ? (bool)")
 
                 # 未実装
-            elif code[2] == "2":
+            elif code == "302":
                 console.log("count files")
-                path = datadir + ""
-                Answer = id + to_num( "/" + sum(os.path.isfile(os.path.join(path, name)) for name in os.listdir(path)) )
-                # 未実装
+                path = datadir + "/global/" + var
+                Answer = id + "/" + count_files(path)
 
             elif code[2] == "3":
                 console.log("list files")
@@ -279,6 +288,10 @@ def response(request, gi):
                 console.log("== file ? (bool)")
 
                 # 未実装
+            elif code == "402":
+                console.log("count files")
+                path = datadir + "/projects/" + var
+                Answer = id + "/" + count_files(path)
                 
         elif code[0] == "5":
             if code[2] == "0":
@@ -320,6 +333,11 @@ def response(request, gi):
                     file.close()
                 else:
                     Answer = id + "/" + "-1"
+        if safe:
+            # 次回通信用のnonceとAADを設定しておく
+            sessionid = read_file_lines
+            path = datadir + "/session/"
+            # "TODO"
         console.log(header + ", " + Answer)
         return header + to_num(Answer)
 
@@ -403,15 +421,17 @@ def read_file(path):
     except Exception as e:
         console.log(f"エラーが発生しました: {e}")
 
-def read_file_lines(file_path):
+def read_file_lines(file_path, disp_err=True):
     try:
         with open(file_path, 'r') as file:  # 'r'モードで読み込み
             lines = file.readlines()  # 各行をリストとして読む
         return lines
     except FileNotFoundError:
-        console.log(f"{file_path} は見つかりませんでした。")
+        if disp_err:
+            console.log(f"{file_path} は見つかりませんでした。")
     except Exception as e:
-        console.log(f"エラーが発生しました: {e}")
+        if disp_err:
+            console.log(f"エラーが発生しました: {e}")
 
 def file_exists(path):
   return os.path.exists(path)
