@@ -436,7 +436,7 @@ def read_file_lines(file_path, disp_err=True):
 def file_exists(path):
   return os.path.exists(path)
 
-def days_since_2000():
+def days_since_2000(tofloat=False):
     # 2000年1月1日午前0時0分0秒をUTCで定義
     start_date = datetime(2000, 1, 1, 0, 0, 0)
     
@@ -445,7 +445,10 @@ def days_since_2000():
     
     # 経過日数を計算
     delta = current_date - start_date
-    return delta.days
+    if tofloat:
+        return delta.days
+    else:
+        return int(delta.days)
 
 def pad_right(text: str, total_length: int, pad_char: str = 'f') -> str:
     """
