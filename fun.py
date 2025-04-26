@@ -23,6 +23,7 @@ tw_認証 = dict()
 watting = list()
 
 def set_log(name):
+    return
     global console
     global datadir
     path = datadir + "/log_files/" + name + ".log"
@@ -32,8 +33,6 @@ def set_log(name):
     console = Console(file=open(path, "wt"))
     console.rule(f"Report Generated {datetime.now().ctime()}")
 
-    # 標準出力をリダイレクト
-    sys.stdout = console
 
 def cleanup():
     global old_stdout

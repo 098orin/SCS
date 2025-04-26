@@ -65,13 +65,13 @@ tools.install_if_not_exists("rich")
 
 path = value.path
 
-file = open(path + "/fun.py", "br")
+"""file = open(path + "/fun.py", "br")
 fun_hash_old = hash(file.read())
 file.close()
 
 file = open(path + "/value.py", "br")
 val_hash_old = hash(file.read())
-file.close()
+file.close()"""
 
 i = 1
 
