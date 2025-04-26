@@ -151,12 +151,12 @@ def response(request, gi):
             console.log('no id')
             if code == "100":
                 console.log("get id")
-                path = datadir + "/about/" + id + "/username.txt"
-                if not file_exists(path):
-                    write_file(path, user)
 
                 path = datadir + "/id/" + user + ".txt"
                 id = read_file(path)
+                path = datadir + "/about/" + id + "/username.txt"
+                if not file_exists(path):
+                    write_file(path, user)
                 if not file_exists(path):
                     Answer = user + "/-1"
                 else:
