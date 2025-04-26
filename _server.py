@@ -109,7 +109,11 @@ signal.signal(signal.SIGINT, signal_handler)
 for i in range(len(value.project_id)):
     com = f"python {value.path}/event.py {i}"
     coms.append(com)
+
+com = f"python {value.path}/session_manager.py {i}"
+coms.append(com)
 print(coms)
+
 # スレッドを作成してプロセスを実行
 try:
     while True:
