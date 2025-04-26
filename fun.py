@@ -3,6 +3,7 @@ import value
 # import json
 import time
 import os
+import sys
 from datetime import datetime
 
 import crpt
@@ -11,6 +12,7 @@ from rich.console import Console
 import scratchattach as scratch3
 
 console = Console()
+old_stdout = sys.stdout
 
 session = scratch3.login(value.username, value.password)
 
@@ -19,6 +21,23 @@ datadir = value.datadir
 
 tw_認証 = dict()
 watting = list()
+
+def set_log(name):
+    global console
+    global datadir
+    # ファイルにリダイレクトする
+    console = Console(file=open(datadir + "/log_files/" + name + ".log", "w"))
+
+    # 標準出力をリダイレクト
+    sys.stdout = console
+
+def cleanup():
+    global old_stdout
+    global console
+    # 元の標準出力とファイルを閉じる
+    sys.stdout = old_stdout
+    console.file.close()
+    console.log("Cleanup complete.")
 
 def to_txt(number):
     try:
@@ -145,7 +164,7 @@ def response(request, gi):
                 path = datadir + "/id/" + user + ".txt"
                 console.log(path)
                 if os.path.isfile(path):
-                    Answer = user + "/-1"
+                    Answer = user + "/-0"
                 else:
                     id = count_files(datadir + "/id/") + 1
                     write_file(path, id)

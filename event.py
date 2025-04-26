@@ -1,4 +1,5 @@
 import sys
+import signal
 import scratchattach as scratch3
 import value
 import fun
@@ -38,4 +39,10 @@ def on_create(activity):
 def on_ready():
    print(f"{gi}: Event listener ready!")
 
+def sigterm_handler(signum, frame):
+    fun.cleanup()  # ログファイルを閉じる
+
+
+signal.signal(signal.SIGTERM, sigterm_handler)
+fun.set_log(value.project_client[gi]+ "_" + str(value.project_id[gi]))
 events.start()
