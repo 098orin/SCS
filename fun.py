@@ -29,7 +29,7 @@ def set_log(name):
     if not file_exists(path):
         write_file(path, "")
     # ファイルにリダイレクトする
-    console = Console(file=open(path, "flush"))
+    console = Console(file=open(path, "w"))
 
     # 標準出力をリダイレクト
     sys.stdout = console
