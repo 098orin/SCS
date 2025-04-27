@@ -272,7 +272,7 @@ def response(request, gi):
             elif code == "302":
                 console.log("count files")
                 path = datadir + "/global/" + var
-                Answer = id + "/" + count_files(path)
+                Answer = id + "/" + str(count_files(path))
 
             elif code[2] == "3":
                 console.log("list files")
@@ -295,7 +295,7 @@ def response(request, gi):
             elif code == "402":
                 console.log("count files")
                 path = datadir + "/projects/" + var
-                Answer = id + "/" + count_files(path)
+                Answer = id + "/" + str(count_files(path))
                 
         elif code[0] == "5":
             if code[2] == "0":
@@ -385,7 +385,7 @@ def set_cloud (n,num:int, gi):
         console.log("Error: " + str(error))
 
 
-def count_files(path):
+def count_files(path) -> int:
     # ディレクトリ内のファイルをカウントする
     try:
         files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
