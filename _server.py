@@ -84,6 +84,61 @@ from rich.logging import RichHandler
 import logging
 import value
 
+
+coms = []
+threads = []
+processes = []
+
+def cleanup():
+    print("\nCtrl+C を検知。サーバーを終了します...")
+    for process in processes:
+        if process.poll() is None:  # プロセスがまだ実行中なら
+            process.terminate()
+            time.sleep(1)  # 1秒待機
+            process.kill()  # 強制終了
+    print("Waiting for threads to finish...")
+    for thread in threads:
+        thread.join(timeout=5) # スレッドの終了を待つ
+    print("サーバーを正常に終了しました。")
+
+# Ctrl+C を検知するためのシグナルハンドラ
+def signal_handler(signum, frame):
+    cleanup()
+    sys.exit(0)
+
+# シグナルハンドラの設定
+signal.signal(signal.SIGINT, signal_handler)
+
+for i in range(len(value.project_id)):
+    com = f"python {value.path}/event.py {i}"
+    coms.append(com)
+
+com = f"python {value.path}/session_manager.py"
+# coms.append(com)
+print(coms)
+
+# スレッドを作成してプロセスを実行
+try:
+    while True:
+        for cmd in coms:
+            process = subprocess.Popen(cmd, shell=True, text=True)
+            processes.append(process)  # プロセスをリストに追加
+
+            thread = threading.Thread(target=process.wait)  # プロセスが終了するのを待つスレッド
+            threads.append(thread)
+            thread.start()
+        print("Done!")
+
+        for thread in threads:
+            thread.join()
+
+        time.sleep(5)
+except KeyboardInterrupt:
+    cleanup()
+    sys.exit(0)
+
+
+"""
 # Richのコンソール設定
 console = Console()
 logging.basicConfig(
@@ -95,13 +150,13 @@ logging.basicConfig(
 log = logging.getLogger("rich")
 
 def run_process(commands, process_name):
-    """
+    ""
     単一のコマンドを実行し、その状態を監視する。
 
     Args:
         command (list): 実行するコマンド
         process_name (str): プロセスの名前（ログ出力用）
-    """
+    ""
     log_file = f"{value.datadir}/log_files/{process_name}.log"
     command_ver = 0 
     while True:
@@ -180,4 +235,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main()"""
