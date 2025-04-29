@@ -103,11 +103,12 @@ def run_process(command, process_name):
         process_name (str): プロセスの名前（ログ出力用）
     """
     log_file = f"{value.datadir}/log_files/{process_name}.log"
+    command_ver = 0 
     while True:
         log.info(f"[bold green]{process_name}[/]: プロセスを開始: {command}", extra={"markup": True})
         try:
             process = subprocess.Popen(
-                command,
+                command[command_ver],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
@@ -139,7 +140,8 @@ def run_process(command, process_name):
                 log.error(f"[bold red]{process_name}[/] プロセスが異常終了しました（コード: {return_code}）。再起動します...")
             with open(log_file, "a") as f:
                 f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [{process_name}] プロセス終了、コード: {return_code}\n")
-
+        except FileNotFoundError as e:
+            command_ver = 1
         except Exception as e:
             log.error(f"[bold red]{process_name}[/] エラー発生: {e}", extra={"markup": True})
             with open(log_file, "a") as f:
@@ -152,7 +154,7 @@ def main():
     coms = []
     names = []
     for i in range(len(value.project_id)):
-        com = f"python {value.path}/event.py {i}"
+        com = [f"python {value.path}/event.py {i}", f"python event.py {i}"]
         coms.append(com)
         names.append(f"{value.project_client[i]}_{value.project_id[i]}_eventpy")
     print(coms)
