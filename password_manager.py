@@ -25,6 +25,14 @@ def generate_key_pair():
 
 def exchange_keys(private_key, peer_public_key):
     """共有鍵を計算する"""
+    if isinstance(private_key, int):
+        private_key = format(private_key, "x")
+    if isinstance(peer_public_key, int):
+        peer_public_key = format(peer_public_key, "x")
+    if isinstance(private_key, str):
+        private_key = x448.X448PrivateKey.from_private_bytes(bytes.fromhex(private_key))
+    if isinstance(peer_public_key, str):
+        peer_public_key = x448.X448PublicKey.from_public_bytes(bytes.fromhex(peer_public_key))
     shared_key = private_key.exchange(peer_public_key)
     return shared_key
 
@@ -77,8 +85,9 @@ def set_password(comment):
     
 if arg == "gen":
     public_key, private_key = generate_key_pair()
-    print(f"秘密鍵：{key_to_hex(private_key)}")
-    print(f"公開鍵：{key_to_hex(public_key)}")
+    private_key, public_key = key_to_hex(private_key), key_to_hex(public_key)
+    print(f"公開鍵：{public_key}")
+    print(f"秘密鍵：{private_key}")
     print("README.md を参照して、適切に処理してください。")
 else:
     while True:
