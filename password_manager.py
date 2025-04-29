@@ -51,11 +51,11 @@ def key_to_hex(key):
         )
     return bytes.hex()
 
-def is_alphanumeric_with_hyphen_underscore(text):
+def is_official(text):
   """
-  文字列が英数字、ハイフン、アンダースコアのみで構成されているかチェックする
+  文字列が英数字、ハイフン、アンダースコア、コロンのみで構成されているかチェックする
   """
-  return bool(re.match("^[a-zA-Z0-9\\-_]+$", text))
+  return bool(re.match("^[a-zA-Z0-9\\-_,]+$", text))
 
 def purse_comment(comment):
     """
@@ -63,7 +63,11 @@ def purse_comment(comment):
     """
     comment_data = comment.content
     comment_author = comment.author_name
-    if is_alphanumeric_with_hyphen_underscore(comment_data) and comment_author == comment_data[len(comment_author)]:
+    if is_official(comment_data) and comment_author == comment_data[len(comment_author)]:
+        data = comment_data.split(",")
+        if len(data) != 3:
+            console.log("Invalid comment format")
+            return False
         return True
     else:
         return False
