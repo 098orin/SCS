@@ -44,5 +44,4 @@ def sigterm_handler(signum, frame):
 
 
 signal.signal(signal.SIGTERM, sigterm_handler)
-fun.set_log(value.project_client[gi]+ "_" + str(value.project_id[gi]))
 events.start()

@@ -22,7 +22,7 @@ datadir = value.datadir
 tw_認証 = dict()
 watting = list()
 
-def set_log(name):
+"""def set_log(name):
     return
     global console
     global datadir
@@ -31,7 +31,7 @@ def set_log(name):
         write_file(path, "")
     # ファイルにリダイレクトする
     console = Console(file=open(path, "wt"))
-    console.rule(f"Report Generated {datetime.now().ctime()}")
+    console.rule(f"Report Generated {datetime.now().ctime()}")"""
 
 
 def cleanup():
@@ -141,10 +141,13 @@ def response(request, gi):
             header = "1"
         header = header + "1"
         if code[0] != "1":
-            id = str(user)
-            path = datadir + "/about/" + id + "/username.txt"
-            if file_exists(path):
-                user = read_file_lines(path, disp_err=False)[0]
+            try:
+                id = str(user)
+                path = datadir + "/about/" + id + "/username.txt"
+                if file_exists(path):
+                    user = read_file_lines(path, disp_err=False)[0]
+            except Exception as error:
+                console.log("In response():" + error)
 
         if code[0] == "1":
             # no id
@@ -192,7 +195,7 @@ def response(request, gi):
                 if not file_exists(path):
                     Answer = user + "/$$-0"
                     return Answer
-                passvar = crpt.decrypt_data(password, req, nonce, aad)
+                passvar = crpt.decrypt_chachapoly(password, req, nonce, aad)
                 if password == passvar:
                     console.log("パスワードが一致しました。セッションを作成します。")
                     sessionid = os.urandom(16).hex()
@@ -216,17 +219,6 @@ def response(request, gi):
                     console.log("パスワードが間違っています")
                     Answer = user + "/$$-1"
             elif code == "111":
-                console.log("set password")
-                path = datadir + "/password/" + user + "password.txt"
-                if value.project_privilege[gi] != "password":
-                    console.log("Error: projectに権限がありません")
-                    Answer = user + "/-1"
-                    console.log(Answer)
-                    return Answer
-                if file_exists(path):
-                    console.log("Error: password file already exists")
-                    Answer = user + "/-0"
-                    return Answer
                 console.log("TODO")
                 pass
             else:

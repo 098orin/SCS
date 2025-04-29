@@ -1,9 +1,8 @@
-# from pydoc import plain
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 from cryptography.exceptions import InvalidTag
 
 # --- 暗号化関数 ---
-def encrypt_data(key: bytes, plaintext: bytes, nonce: bytes, aad: bytes = None) -> str:
+def encrypt_chachapoly(key: bytes, plaintext: bytes, nonce: bytes, aad: bytes = None) -> str:
     """
     ChaCha20-Poly1305 を使ってデータを暗号化する
 
@@ -26,7 +25,7 @@ def encrypt_data(key: bytes, plaintext: bytes, nonce: bytes, aad: bytes = None) 
     if isinstance(aad, bytes):
         aad = bytes.fromhex(aad)
 
-    # ChaCha20Poly1305 オブジェクトを作成するよ キーを渡す
+    # ChaCha20Poly1305 オブジェクトを作成し、キーを渡す
     aead = ChaCha20Poly1305(key)
 
     # encrypt() メソッドで暗号化 nonce, plaintext, aad を渡す
@@ -36,7 +35,7 @@ def encrypt_data(key: bytes, plaintext: bytes, nonce: bytes, aad: bytes = None) 
     return ciphertext.hex()
 
 # --- 復号化関数 ---
-def decrypt_data(key, ciphertext, nonce, aad = None) -> str | None:
+def decrypt_chachapoly(key, ciphertext, nonce, aad = None) -> str | None:
     """
     ChaCha20-Poly1305 を使ってデータを復号化する
 

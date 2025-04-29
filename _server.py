@@ -75,102 +75,105 @@ file.close()"""
 
 i = 1
 
-from rich.progress import Progress
-
-import threading
 import subprocess
-import sys
-import signal
 import time
+import sys
+import threading
+from rich.console import Console
+from rich.logging import RichHandler
+import logging
+import value
 
-coms = []
-threads = []
-processes = []
+# Richのコンソール設定
+console = Console()
+logging.basicConfig(
+    level="INFO",
+    format="%(message)s",
+    datefmt="[%X]",
+    handlers=[RichHandler(console=console, show_path=False)],
+)
+log = logging.getLogger("rich")
 
-def cleanup():
-    print("\nCtrl+C を検知。サーバーを終了します...")
-    for process in processes:
-        if process.poll() is None:  # プロセスがまだ実行中なら
-            process.terminate()
-            time.sleep(1)  # 1秒待機
-            process.kill()  # 強制終了
-    print("Waiting for threads to finish...")
-    for thread in threads:
-        thread.join(timeout=5) # スレッドの終了を待つ
-    print("サーバーを正常に終了しました。")
+def run_process(command, process_name):
+    """
+    単一のコマンドを実行し、その状態を監視する。
 
-# Ctrl+C を検知するためのシグナルハンドラ
-def signal_handler(signum, frame):
-    cleanup()
-    sys.exit(0)
-
-# シグナルハンドラの設定
-signal.signal(signal.SIGINT, signal_handler)
-
-for i in range(len(value.project_id)):
-    com = f"python {value.path}/event.py {i}"
-    coms.append(com)
-
-com = f"python {value.path}/session_manager.py"
-# coms.append(com)
-print(coms)
-
-# スレッドを作成してプロセスを実行
-try:
+    Args:
+        command (list): 実行するコマンド
+        process_name (str): プロセスの名前（ログ出力用）
+    """
+    log_file = f"{value.datadir}/log_files/{process_name}.log"
     while True:
-        for cmd in coms:
-            process = subprocess.Popen(cmd, shell=True, text=True)
-            processes.append(process)  # プロセスをリストに追加
+        log.info(f"[bold green]{process_name}[/]: プロセスを開始: {command}", extra={"markup": True})
+        try:
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
 
-            thread = threading.Thread(target=process.wait)  # プロセスが終了するのを待つスレッド
-            threads.append(thread)
-            thread.start()
-        print("Done!")
+            while True:
+                output = process.stdout.readline()
+                if output:
+                    # コンソールに直接出力
+                    console.log(f"[bold green]{process_name}[/] [stdout] {output.strip()}", extra={"markup": True})
+                    with open(log_file, "a") as f:
+                        f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [{process_name}] [stdout] {output.strip()}\n")
 
-        for thread in threads:
-            thread.join()
+                error = process.stderr.readline()
+                if error:
+                    # コンソールに直接出力
+                    console.log(f"[bold red]{process_name}[/] [stderr] {error.strip()}", extra={"markup": True})
+                    with open(log_file, "a") as f:
+                        f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [{process_name}] [stderr] {error.strip()}\n")
+
+
+                if process.poll() is not None:
+                    break
+
+            return_code = process.returncode
+            if return_code == 0:
+                log.info(f"[bold green]{process_name}[/] プロセスが正常終了しました。再起動します...")
+            else:
+                log.error(f"[bold red]{process_name}[/] プロセスが異常終了しました（コード: {return_code}）。再起動します...")
+            with open(log_file, "a") as f:
+                f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [{process_name}] プロセス終了、コード: {return_code}\n")
+
+        except Exception as e:
+            log.error(f"[bold red]{process_name}[/] エラー発生: {e}")
+            with open(log_file, "a") as f:
+                f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [{process_name}] エラー発生: {e}\n")
 
         time.sleep(5)
-except KeyboardInterrupt:
-    cleanup()
-    sys.exit(0)
-# print("サーバーを終了しました。")
 
 
-"""
-def run_task(i):
-        try:
-            main.main(value.project_id[i],i)
-        except Exception as error:
-            print(error)
+def main():
+    coms = []
+    names = []
+    for i in range(len(value.project_id)):
+        com = f"python {value.path}/event.py {i}"
+        coms.append(com)
+        names.append(f"{value.project_client[i]}_{value.project_id[i]}_eventpy")
+    print(coms)
 
-while True:
-    i += 1
-    with concurrent.futures.ThreadPoolExecutor(max_workers=len(value.project_id)) as executor:
-        futures = [executor.submit(run_task, i) for i in range(len(value.project_id))]  # スレッドを立ち上げ
+    threads = []
+    for i in range(len(coms)):
+        thread = threading.Thread(
+            target=run_process,
+            args=(coms[i], names[i]),
+            daemon=True
+        )
+        threads.append(thread)
+        thread.start()
 
-        # 全ての結果を取得するまで待機
-        results = [f.result() for f in concurrent.futures.as_completed(futures)]
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        log.info("終了シグナルを受け取りました。")
+        sys.exit(0)
 
 
-
-    if i == 50:
-        i = 0
-        try:
-
-            with open(path + "/fun.py", "br") as file:
-                fun_hash_new = hash(file.read())
-                if fun_hash_old!= fun_hash_new:
-                    import main
-                    fun_hash_old = fun_hash_new
-        
-            with open(path + "/value.py", "br") as file:
-                val_hash_new = hash(file.read())
-                if val_hash_old!= val_hash_new:
-                    import main
-                    import value
-                    val_hash_old = val_hash_new
-
-        except Exception as error:
-            print(error)
-"""
+if __name__ == "__main__":
+    main()

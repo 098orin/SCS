@@ -42,26 +42,3 @@ n = str(2)
 
 print(repuest[n])
 """
-
-
-user = 34223942324235351416
-datadir = os.path.expanduser ("~") + "/SCStest"
-
-print ("make id") 
-path = datadir + "/id/" + str(user) + ".txt"
-print(path)
-if not os.path.isfile(path):
-    path = datadir + "/id/"
-    id = sum(os.path.isfile(os.path.join(path, name)) for name in os.listdir(path))
-    id = id + 1
-    print(sum(os.path.isfile(os.path.join(path, name)) for name in os.listdir(path)))
-    path = path + str(user) + ".txt"
-    with open(path, mode='w') as file:
-        file.write(str(id))
-    path = datadir + "/about/" + str(id) + "/about.txt"
-    print(path)
-if not os.path.exists(os.path.dirname(path)):
-    os.makedirs(os.path.dirname(path))
-if not os.path.isfile(path):
-        with open(path, mode='w', newline="\n") as file:
-            file.writelines( "1\n" + "100" )
