@@ -94,7 +94,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("rich")
 
-def run_process(command, process_name):
+def run_process(commands, process_name):
     """
     単一のコマンドを実行し、その状態を監視する。
 
@@ -105,10 +105,11 @@ def run_process(command, process_name):
     log_file = f"{value.datadir}/log_files/{process_name}.log"
     command_ver = 0 
     while True:
+        command = commands[command_ver]
         log.info(f"[bold green]{process_name}[/]: プロセスを開始: {command}", extra={"markup": True})
         try:
             process = subprocess.Popen(
-                command[command_ver],
+                command,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
@@ -142,6 +143,7 @@ def run_process(command, process_name):
                 f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [{process_name}] プロセス終了、コード: {return_code}\n")
         except FileNotFoundError as e:
             command_ver = 1
+            log.error(f"[bold red]{process_name}[/] エラー発生: {e}", extra={"markup": True})
         except Exception as e:
             log.error(f"[bold red]{process_name}[/] エラー発生: {e}", extra={"markup": True})
             with open(log_file, "a") as f:
