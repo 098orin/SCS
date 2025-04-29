@@ -141,7 +141,7 @@ def run_process(command, process_name):
                 f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [{process_name}] プロセス終了、コード: {return_code}\n")
 
         except Exception as e:
-            log.error(f"[bold red]{process_name}[/] エラー発生: {e}")
+            log.error(f"[bold red]{process_name}[/] エラー発生: {e}", extra={"markup": True})
             with open(log_file, "a") as f:
                 f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [{process_name}] エラー発生: {e}\n")
 
