@@ -82,6 +82,7 @@ import threading
 from rich.console import Console
 from rich.logging import RichHandler
 import logging
+import signal
 import value
 
 
