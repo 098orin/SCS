@@ -231,7 +231,10 @@ def response(request, gi):
             if code[2] == "0":
                 console.log("get status")
                 path = datadir + "/about/" + id + "/about.txt"
-                file = str(read_file_lines(path)[0])
+                if file_exists(path):
+                    file = str(read_file_lines(path)[0])
+                else:
+                    file = None
                 if file == None:
                     Answer = id + "/-0"
                 else:
@@ -240,7 +243,10 @@ def response(request, gi):
             elif code[2] == "1":
                 console.log("get point")
                 path = datadir + "/about/" + id + "/about.txt"
-                file = str(read_file_lines(path)[1])
+                if file_exists(path):
+                    file = str(read_file_lines(path)[1])
+                else:
+                    file = None
                 if file == None:
                     Answer = id + "/-0"
                 else:
