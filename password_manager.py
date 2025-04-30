@@ -78,7 +78,9 @@ def set_password(comment):
     Set the password for the user by the project comment.
     """
     user = comment.author_name
-    encrypted_password = comment.content[len(user):]
+    data = comment.content.split(",")
+    user_public_key = data[1]
+    encrypted_password = data[2]
 
     console.log("set password")
     path = datadir + "/password/" + user + "password.txt"
