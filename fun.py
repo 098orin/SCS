@@ -158,12 +158,12 @@ def response(request, gi):
 
                 path = datadir + "/id/" + user + ".txt"
                 id = read_file(path)
-                path = datadir + "/about/" + id + "/username.txt"
-                if not file_exists(path):
-                    write_file(path, user)
                 if not file_exists(path):
                     Answer = user + "/-1"
                 else:
+                    path = datadir + "/about/" + id + "/username.txt"
+                    if not file_exists(path):
+                        write_file(path, user)
                     Answer = user + "/" + str(id)
 
             elif code == "101":
