@@ -62,7 +62,7 @@ python password_manager.py gen
 ```
 2. `value.py`で変数`private_key`を宣言。生成した秘密鍵を入力する。なお、`0x`を先頭につけて16進数として定義する。
 3. `value.py`で変数`public_key`を宣言。生成した秘密鍵を入力する。なお、`0x`を先頭につけて16進数として定義する。
-4. https://scratch.mit.edu/projects/-未定- をremixして、変数：Public_key に生成した公開鍵を入力して共有。
+4. https://scratch.mit.edu/projects/-未定- をremixして、変数：Public_key に生成した公開鍵（encoded）を入力して共有。
 5. `value.py`で変数`password_project`を宣言。remixしてできたプロジェクトのidを入力する。
 
 # 今後の更新予定（TODO）

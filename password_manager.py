@@ -127,13 +127,12 @@ def set_password(comment):
         console.log("change password")
     pass
 
-"""
 if arg == "gen":
     public_key, private_key = generate_key_pair()
     private_key, public_key = key_to_hex(private_key), key_to_hex(public_key)
     print(f"公開鍵：{public_key}")
     print(f"秘密鍵：{private_key}")
-    print(f"公開鍵（encoded）：{to_string_(int(str(public_key), 16))}"))
+    print(f"公開鍵（encoded）：{to_string_(int(str(public_key), 16))}")
     print("README.md を参照して、適切に処理してください。")
 else:
     while True:
@@ -142,4 +141,3 @@ else:
             if purse_comment(comment):
                 set_password(comment)
         time.sleep(60)  # 60秒待機
-"""
