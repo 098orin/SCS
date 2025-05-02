@@ -27,8 +27,13 @@ public_key = 0x`your_Curve448_public_key` # 後述する手順に従う。
 最初に`setup.py`を動かす必要があった気がしないでもないです。もし動かなかったらこれを実行してみてください。
 
 # Run
-実行にはpython3.8以上が必要です。それ以外は必要ありません。管理者権限があるとなお良いです。
-一応すべてのOSで動くように作っていますが、動作確認はWindowsとLinuxのみです。
+実行にはpython3.8以上といかにあるライブラリのリストが必要です。それ以外は必要ありません。管理者権限があるとなお良いです。
+一応すべてのOSで動くように作っていますが、動作確認はLinuxのみです。
+
+* `scratchattach`
+* `cryptography`
+* `rich`
+なお、なかった場合は自動でインストールされます。
 
 Windows, macOS, Linux
 ```bash
@@ -47,6 +52,7 @@ sudo python _server.py
 Scarcth側のprojectのdocumentは
 https://ja.scratch-wiki.info/wiki/%E5%88%A9%E7%94%A8%E8%80%85:Mario-098/ScratchCloudSystem
 を参照してください。
+
 なお、パスワードを使用した通信暗号化機能を使用したい場合は、project_privilegesを"password"に設定したprojectが必要です。"url(未定)"をremixしてください。
 
 ## password登録

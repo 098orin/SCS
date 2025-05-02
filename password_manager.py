@@ -1,12 +1,20 @@
 import sys
 import value
 import fun
+import crpt
 import time
 from rich.console import Console
 import scratchattach as scratch3
 import re
 
-arg = str(sys.argv[1])
+try:
+    arg = str(sys.argv[1])
+except IndexError:
+    arg = ""
+
+chars = "-^~=)('&%$#!abcdefghijklmnopqrstuvwxyz@[;:],./<>?_+*}`ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛｦﾝ"
+test_chars = "1234567890-^~=)('&%$#!abcdefghijklmnopqrstuvwxyz@[;:],./<>?_+*}`ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛｦﾝｧｨｩｪｫｬｭｮｯ"
+print(len(chars))
 
 datadir = value.datadir
 project_id = value.password_project
@@ -51,11 +59,24 @@ def key_to_hex(key):
         )
     return bytes.hex()
 
+def to_string_(number):
+    """
+    数値を文字列に変換する
+    """
+    global chars
+    result = ""
+    for i in range(int(len(number)/2)):
+        i = 2*i
+        result += str(chars[int(number[i:i+2])])
+    if len(number) % 2 == 1:
+        result += str(number[i])
+    return result
+
 def is_official(text):
   """
   文字列が英数字、ハイフン、アンダースコア、コロンのみで構成されているかチェックする
   """
-  return bool(re.match("^[a-zA-Z0-9\\-_,]+$", text))
+  return bool(re.match("^[a-zA-Z0-9\\-_,]+$" + chars, text))
 
 def purse_comment(comment):
     """
@@ -97,8 +118,8 @@ if arg == "gen":
     print("README.md を参照して、適切に処理してください。")
 else:
     while True:
-        project.comments(limit=10)
-        for comment in project.comments(limit=3):
+        comments = project.comments(limit=10)
+        for comment in comments:
             if purse_comment(comment):
                 set_password(comment)
         time.sleep(60)  # 60秒待機
