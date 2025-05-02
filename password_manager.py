@@ -12,7 +12,7 @@ try:
 except IndexError:
     arg = ""
 
-chars = "-^~=)('&%$#!abcdefghijklmnopqrstuvwxyz@[;:],./<>?_+*}`ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛｦﾝ"
+chars = "-^~=)('&%$#!abcdefghijklmnopqrstuvwxyz@[;:],./<>?_+*}`ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛｦﾝｧ"
 test_chars = "1234567890-^~=)('&%$#!abcdefghijklmnopqrstuvwxyz@[;:],./<>?_+*}`ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛｦﾝｧｨｩｪｫｬｭｮｯ"
 print(len(chars))
 
@@ -63,6 +63,7 @@ def to_string_(number):
     """
     数値を文字列に変換する
     """
+    number = str(number)
     global chars
     result = ""
     for i in range(int(len(number)/2)):
@@ -72,9 +73,25 @@ def to_string_(number):
         result += str(number[i])
     return result
 
+def to_number_(string):
+    """
+    文字列を数値に変換する
+    """
+    global chars
+    result = ""
+    for i in range(len(string)):
+        if string[i] not in chars:
+            result += str(string[i])
+        else:
+            if chars.index(string[i]) < 10:
+                result += "0" + str(chars.index(string[i]))
+            else:
+                result += str(chars.index(string[i]))
+    return int(result)
+
 def is_official(text):
   """
-  文字列が英数字、ハイフン、アンダースコア、コロンのみで構成されているかチェックする
+  文字列が英数字、ハイフン、アンダースコア、コロン、charsに文字のみで構成されているかチェックする
   """
   return bool(re.match("^[a-zA-Z0-9\\-_,]+$" + chars, text))
 
@@ -109,12 +126,14 @@ def set_password(comment):
         console.log("password file already exists")
         console.log("change password")
     pass
-    
+
+"""
 if arg == "gen":
     public_key, private_key = generate_key_pair()
     private_key, public_key = key_to_hex(private_key), key_to_hex(public_key)
     print(f"公開鍵：{public_key}")
     print(f"秘密鍵：{private_key}")
+    print(f"公開鍵（encoded）：{to_string_(int(str(public_key), 16))}"))
     print("README.md を参照して、適切に処理してください。")
 else:
     while True:
@@ -123,3 +142,4 @@ else:
             if purse_comment(comment):
                 set_password(comment)
         time.sleep(60)  # 60秒待機
+"""
