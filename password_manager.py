@@ -147,11 +147,11 @@ if arg == "gen":
     print("README.md を参照して、適切に処理してください。")
 else:
     while True:
-        comments = project.comments(limit=10)
+        comments = project.comments(limit=20)
         for comment in comments:
             if comment not in prosecced_codes and purse_comment(comment):
                 set_password(comment.content, comment.author_name)
                 prosecced_codes.append(comment)
-                if len(prosecced_codes) > 10:
+                if len(prosecced_codes) > 20:
                     prosecced_codes.pop()
-        time.sleep(60)  # 60秒待機
+        time.sleep(360)  # 60秒待機
