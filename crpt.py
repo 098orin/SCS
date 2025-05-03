@@ -49,13 +49,13 @@ def decrypt_chachapoly(key, ciphertext, nonce, aad = None) -> str | None:
         復号化されたデータ (HEX列)。認証に失敗した場合は None を返す
     """
     # Byteでなかったら変換
-    if isinstance(key, bytes):
+    if isinstance(key, str):
         key = bytes.fromhex(key)
-    if isinstance(ciphertext, bytes):
+    if isinstance(ciphertext, str):
         ciphertext = bytes.fromhex(ciphertext)
-    if isinstance(nonce, bytes):
+    if isinstance(nonce, str):
         nonce = bytes.fromhex(nonce)
-    if isinstance(aad, bytes):
+    if isinstance(aad, str):
         aad = bytes.fromhex(aad)
     # ChaCha20Poly1305 オブジェクトを作成 キーを渡す
     aead = ChaCha20Poly1305(key)

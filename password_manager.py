@@ -12,9 +12,7 @@ try:
 except IndexError:
     arg = ""
 
-chars = "-^~=)('&%$#!abcdefghijklmnopqrstuvwxyz@[;:],./<>?_+*}`ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛｦﾝｧ"
-test_chars = "1234567890-^~=)('&%$#!abcdefghijklmnopqrstuvwxyz@[;:],./<>?_+*}`ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛｦﾝｧｨｩｪｫｬｭｮｯ"
-print(len(chars))
+chars = "-^~=)('&%$#!abcdefghijklmnopqrstuvwxyz@[;:],./<>?_+*}`ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛｦﾝｧ" # 100文字
 
 datadir = value.datadir
 project_id = value.password_project
@@ -89,11 +87,13 @@ def to_number_(string):
                 result += str(chars.index(string[i]))
     return int(result)
 
-def is_official(text):
-  """
-  文字列が英数字、ハイフン、アンダースコア、コロン、charsに文字のみで構成されているかチェックする
-  """
-  return bool(re.match("^[a-zA-Z0-9\\-_,]+$" + chars, text))
+def is_official(s: str) -> bool:
+    """
+    文字列sが英数字、ハイフン、アンダースコア、コロンのみで構成されているかをチェックする。
+    """
+    pattern = r"^[a-zA-Z0-9\-\_,]+$"
+    print(bool(re.match(pattern, s)))
+    return bool(re.match(pattern, s))
 
 def purse_comment(comment):
     """
@@ -101,7 +101,7 @@ def purse_comment(comment):
     """
     comment_data = comment.content
     comment_author = comment.author_name
-    if is_official(comment_data) and comment_author == comment_data[len(comment_author)]:
+    if is_official(comment_data) and comment_author == comment_data[:len(comment_author)]:
         data = comment_data.split(",")
         if len(data) != 3:
             console.log("Invalid comment format")
@@ -111,33 +111,41 @@ def purse_comment(comment):
         return False
 
 
-def set_password(comment):
+def set_password(content,author):
     """
     Set the password for the user by the project comment.
     """
-    user = comment.author_name
-    data = comment.content.split(",")
-    user_public_key = data[1]
-    encrypted_password = data[2]
+    user = author
+    data = content.split(",")
+    user_public_key = data[0]
+    encrypted_password = data[1]
 
     console.log("set password")
     path = datadir + "/password/" + user + "password.txt"
     if fun.file_exists(path):
         console.log("password file already exists")
         console.log("change password")
-    pass
+    exchange_key = exchange_keys(value.private_key, user_public_key)
+    print(exchange_key.hex())
+    crpt.decrypt_chachapoly(
+                                fun.pad_right(exchange_key.hex(), 64),
+                                encrypted_password,
+                                fun.pad_right(exchange_key.hex(), 24),
+                                fun.pad_right(exchange_key.hex(), 8)
+                            )
+
 
 if arg == "gen":
     public_key, private_key = generate_key_pair()
     private_key, public_key = key_to_hex(private_key), key_to_hex(public_key)
-    print(f"公開鍵：{public_key}")
     print(f"秘密鍵：{private_key}")
-    print(f"公開鍵（encoded）：{to_string_(int(str(public_key), 16))}")
+    print(f"公開鍵：{public_key}")
+    # print(f"公開鍵（encoded）：{to_string_(int(str(public_key), 16))}")
     print("README.md を参照して、適切に処理してください。")
 else:
     while True:
         comments = project.comments(limit=10)
         for comment in comments:
             if purse_comment(comment):
-                set_password(comment)
+                set_password(comment.content, comment.author_name)
         time.sleep(60)  # 60秒待機
