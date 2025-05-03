@@ -152,4 +152,6 @@ else:
             if comment not in prosecced_codes and purse_comment(comment):
                 set_password(comment.content, comment.author_name)
                 prosecced_codes.append(comment)
+                if len(prosecced_codes) > 10:
+                    prosecced_codes.pop()
         time.sleep(60)  # 60秒待機
