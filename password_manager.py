@@ -129,12 +129,13 @@ def set_password(content,author):
         console.log("change password")
     exchange_key = exchange_keys(value.private_key, user_public_key)
     print(exchange_key.hex())
-    crpt.decrypt_chachapoly(
+    password = crpt.decrypt_chachapoly(
                                 fun.pad_right(exchange_key.hex(), 64),
                                 encrypted_password,
                                 fun.pad_right(exchange_key.hex(), 24),
                                 fun.pad_right(exchange_key.hex(), 8)
                             )
+    fun.write_file(path, password)
 
 
 if arg == "gen":
