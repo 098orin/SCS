@@ -150,7 +150,10 @@ else:
         comments = project.comments(limit=20)
         for comment in comments:
             if comment not in prosecced_codes and purse_comment(comment):
-                set_password(comment.content, comment.author_name)
+                try:
+                    set_password(comment.content, comment.author_name)
+                except Exception as e:
+                    console.log(f"Error: {e}")
                 prosecced_codes.append(comment)
                 if len(prosecced_codes) > 20:
                     prosecced_codes.pop()
