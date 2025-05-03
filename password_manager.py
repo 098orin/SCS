@@ -119,8 +119,8 @@ def set_password(content,author):
     """
     user = author
     data = content.split(",")
-    user_public_key = data[0]
-    encrypted_password = data[1]
+    user_public_key = data[1]
+    encrypted_password = data[2]
 
     console.log("set password")
     path = datadir + "/password/" + user + "password.txt"
