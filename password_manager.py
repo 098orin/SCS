@@ -154,4 +154,4 @@ else:
                 prosecced_codes.append(comment)
                 if len(prosecced_codes) > 20:
                     prosecced_codes.pop()
-        time.sleep(360)  # 60秒待機
+        time.sleep(360)  # 360秒待機
