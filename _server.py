@@ -116,6 +116,8 @@ for i in range(len(value.project_id)):
 
 com = f"python {value.path}/session_manager.py"
 # coms.append(com)
+com = f"python {value.path}/password_manager.py"
+coms.append(com)
 print(coms)
 
 # スレッドを作成してプロセスを実行
