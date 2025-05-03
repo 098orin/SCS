@@ -20,6 +20,8 @@ console = Console()
 
 project = scratch3.get_project(project_id)
 
+prosecced_codes = []
+
 from cryptography.hazmat.primitives.asymmetric import x448
 from cryptography.hazmat.primitives import serialization
 
@@ -146,6 +148,7 @@ else:
     while True:
         comments = project.comments(limit=10)
         for comment in comments:
-            if purse_comment(comment):
+            if comment not in prosecced_codes and purse_comment(comment):
                 set_password(comment.content, comment.author_name)
+                prosecced_codes.append(comment)
         time.sleep(60)  # 60秒待機
