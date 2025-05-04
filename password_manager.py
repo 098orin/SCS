@@ -149,7 +149,7 @@ if __name__ == "__main__":
         while True:
             comments = project.comments(limit=20)
             for comment in comments:
-                if comment not in prosecced_codes and purse_comment(comment):
+                if (not comment in prosecced_codes) and (purse_comment(comment)):
                     try:
                         set_password(comment.content, comment.author_name)
                     except Exception as e:
