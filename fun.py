@@ -95,12 +95,23 @@ def response_cloudvalues (repuest, gi):
 def response(request, gi):
     Answer = ""
     request = str(request)
-    request, safe = purse_request(request)
+    request, safe, user = purse_request(request)
 
     if request != "0": #not None
         if safe:
-            pass
-            # request = 
+            if user == "":
+                console.log("[red]Error: user is empty[/]")
+                console.log("|mode: safe")
+                console.log(f"|request: {request}")
+                return "0"
+            path = datadir + "/password/" + user + "_password.txt"
+            key = read_file_lines(path, disp_err=False)[0]
+            if not file_exists(path):
+                console.log("[red]Error: password file not found[/]")
+                console.log(f"|mode: safe")
+                console.log(f"|request: {request}")
+                return "0"
+            request = crpt.decrypt_chachapoly(key, request, nonce, aad)
         
         code = request[0:3]
         req = to_txt(request[3:])
@@ -131,11 +142,11 @@ def response(request, gi):
         console.log(code)
         console.log(user)
         if server_id != value.username and server_id != "all":
-            console.log("[red]400 Bad request[red]")
-            console.log("サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
-            console.log("project id が正しい場合、プロジェクトに不備がある可能性があります。")
-            console.log("プロジェクトの初期化関数をcheckしてください。")
-            console.log("===")
+            console.log("[red]400 Bad request[/]")
+            console.log("||サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
+            console.log("||project id が正しい場合、プロジェクトに不備がある可能性があります。")
+            console.log("||プロジェクトの初期化関数をcheckしてください。")
+            console.rule("")
             Answer = str(user) + to_num("/" + "-1")
             console.log(server_id)
             return 
@@ -353,9 +364,9 @@ def get_nonce_aad(user):
 
 def purse_request(request):
     if request == "0":
-        return "0", False
+        return "0", False, ""
     if request[0:2] == "11":
-        return str(request[2:]), False
+        return str(request[2:]), False, ""
     elif request[0:2] == "10":
         serverid = ""
         user = ""
@@ -370,10 +381,10 @@ def purse_request(request):
         serverid = to_txt(serverid)
         user = to_txt(user)
         if serverid != value.username:
-            return "0", False
-        return str(request[0:i]), True
+            return "0", False, ""
+        return str(request[0:i]), True, user
     else:
-        return "0", False
+        return "0", False, ""
 
 
 def set_cloud (n,num:int, gi):
