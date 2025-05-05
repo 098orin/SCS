@@ -98,6 +98,10 @@ def response(request, gi):
     request, safe = purse_request(request)
 
     if request != "0": #not None
+        if safe:
+            pass
+            # request = 
+        
         code = request[0:3]
         req = to_txt(request[3:])
 
@@ -198,7 +202,7 @@ def response(request, gi):
                 passvar = crpt.decrypt_chachapoly(password, req, nonce, aad)
                 if password == passvar:
                     console.log("パスワードが一致しました。セッションを作成します。")
-                    sessionid = os.urandom(16).hex()
+                    sessionid = os.urandom(24).hex()
                     all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
                     all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
                     all_sessiontimestamp = read_file_lines(datadir + "/session/all_timestamps.txt")
@@ -207,7 +211,7 @@ def response(request, gi):
                         sessionid = all_sessionid[all_sessionuser.index(user)]
                     else:
                         while sessionid in all_sessionid:
-                            sessionid = os.urandom(16).hex()
+                            sessionid = os.urandom(24).hex()
                         all_sessionid.append(str(sessionid))
                         all_sessionuser.append(user)
                         all_sessiontimestamp.append(str(days_since_2000()))
@@ -215,6 +219,7 @@ def response(request, gi):
                         write_file(datadir + "/session/all_users.txt", all_sessionuser)
                         write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
                     Answer = user + "/1/" + str(sessionid)
+                    safe = True
                 else:
                     console.log("パスワードが間違っています")
                     Answer = user + "/$$-1"
@@ -337,11 +342,14 @@ def response(request, gi):
                     Answer = id + "/" + "-1"
         if safe:
             # 次回通信用のnonceとAADを設定しておく
-            sessionid = read_file_lines
-            path = datadir + "/session/"
-            # "TODO"
+            path = datadir + "/session/all_ids.txt"
+            sessionid = read_file_lines(path)
+            nonce, aad = get_nonce_aad(user)
         console.log(header + ", " + Answer)
         return header + to_num(Answer)
+
+def get_nonce_aad(user):
+    pass
 
 def purse_request(request):
     if request == "0":
