@@ -108,8 +108,16 @@ def response(request, gi):
             key = read_file_lines(path, disp_err=False)[0]
             if not file_exists(path):
                 console.log("[red]Error: password file not found[/]")
-                console.log(f"|mode: safe")
+                console.log("|mode: safe")
                 console.log(f"|request: {request}")
+                return "0"
+            nonce, aad = get_nonce_aad(user)
+            if nonce == None or aad == None:
+                console.log("[red]Error: nonce or aad is None[/]")
+                console.log("|mode: safe")
+                console.log(f"|request: {request}")
+                console.log(f"|user: {user}")
+                console.log("||User may not be logged in by password.")
                 return "0"
             request = crpt.decrypt_chachapoly(key, request, nonce, aad)
         
