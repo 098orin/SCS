@@ -8,11 +8,15 @@ from datetime import datetime
 
 import crpt
 
+# from cachetools import cached, TTLCache
 from rich.console import Console
 import scratchattach as scratch3
 
 console = Console()
 old_stdout = sys.stdout
+
+# キャッシュ設定
+# cache = TTLCache(maxsize=128, ttl=86400)  # 1日間有効
 
 session = scratch3.login(value.username, value.password)
 
@@ -92,7 +96,7 @@ def response_cloudvalues (repuest, gi):
             i += 1
             set_cloud(i, response(n, gi), gi)
                             
-def response(request, gi):
+def response(request, gi, nonces):
     Answer = ""
     request = str(request)
     request, safe, user = purse_request(request)
@@ -111,7 +115,8 @@ def response(request, gi):
                 console.log("|mode: safe")
                 console.log(f"|request: {request}")
                 return "0"
-            nonce, aad = get_nonce_aad(user)
+            # AADはヘッダ
+            # nonceはnoncesから取得
             if nonce == None or aad == None:
                 console.log("[red]Error: nonce or aad is None[/]")
                 console.log("|mode: safe")
@@ -154,7 +159,6 @@ def response(request, gi):
             console.log("||サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
             console.log("||project id が正しい場合、プロジェクトに不備がある可能性があります。")
             console.log("||プロジェクトの初期化関数をcheckしてください。")
-            console.rule("")
             Answer = str(user) + to_num("/" + "-1")
             console.log(server_id)
             return 
@@ -363,12 +367,9 @@ def response(request, gi):
             # 次回通信用のnonceとAADを設定しておく
             path = datadir + "/session/all_ids.txt"
             sessionid = read_file_lines(path)
-            nonce, aad = get_nonce_aad(user)
         console.log(header + ", " + Answer)
-        return header + to_num(Answer)
+        return header + to_num(Answer), nonces
 
-def get_nonce_aad(user):
-    pass
 
 def purse_request(request):
     if request == "0":
@@ -394,7 +395,6 @@ def purse_request(request):
     else:
         return "0", False, ""
 
-
 def set_cloud (n,num:int, gi):
     if num == None:
         return "None"
@@ -408,7 +408,6 @@ def set_cloud (n,num:int, gi):
         conn.set_var(n,num)
     except Exception as error:
         console.log("Error: " + str(error))
-
 
 def count_files(path) -> int:
     # ディレクトリ内のファイルをカウントする
