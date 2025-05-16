@@ -96,7 +96,7 @@ def response_cloudvalues (repuest, gi):
             i += 1
             set_cloud(i, response(n, gi), gi)
                             
-def response(request, gi, nonces):
+def response(request, gi, nonces, username=None):
     Answer = ""
     request = str(request)
     request, safe, user = purse_request(request)
