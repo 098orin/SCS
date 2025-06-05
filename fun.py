@@ -117,6 +117,7 @@ def response(request, gi, nonces, username=None):
                 return "0"
             # AADはヘッダ
             # nonceはnoncesから取得
+            nonces[user]["client_sequence_number"] += 1
             if nonce == None or aad == None:
                 console.log("[red]Error: nonce or aad is None[/]")
                 console.log("|mode: safe")
@@ -241,6 +242,12 @@ def response(request, gi, nonces, username=None):
                         write_file(datadir + "/session/all_ids.txt", all_sessionid)
                         write_file(datadir + "/session/all_users.txt", all_sessionuser)
                         write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
+                        nonces[user] = {
+                            "server_nonce_iv": 0,
+                            "server_sequence_number": 0,
+                            "client_nonce_iv": 0,
+                            "client_sequence_number": 0,
+                        }
                     Answer = user + "/1/" + str(sessionid)
                     safe = True
                 else:

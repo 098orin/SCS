@@ -1,4 +1,6 @@
 import sys
+
+from networkx import reverse
 import value
 import fun
 import crpt
@@ -6,6 +8,7 @@ import time
 from rich.console import Console
 import scratchattach as scratch3
 import re
+import threading
 
 try:
     arg = str(sys.argv[1])
@@ -137,24 +140,29 @@ def set_password(content,author):
                             )
     fun.write_file(path, password)
 
+def main():
+    comments = reverse(project.comments(limit=20))
+    for comment in comments:
+        if (not comment in prosecced_codes) and (purse_comment(comment)):
+            try:
+                set_password(comment.content, comment.author_name)
+            except Exception as e:
+                console.log(f"Error: {e}")
+            prosecced_codes.append(comment)
+            if len(prosecced_codes) > 20:
+                prosecced_codes.pop()
+    time.sleep(360)  # 360秒待機
+    timer = threading.Timer(300.0, main)
+    timer.start()
+
 if __name__ == "__main__":
     if arg == "gen":
         private_key, public_key = generate_key_pair()
         private_key, public_key = key_to_hex(private_key), key_to_hex(public_key)
         print(f"秘密鍵：{private_key}")
         print(f"公開鍵：{public_key}")
-        # print(f"公開鍵（encoded）：{to_string_(int(str(public_key), 16))}")
         print("README.md を参照して、適切に処理してください。")
     else:
-        while True:
-            comments = project.comments(limit=20)
-            for comment in comments:
-                if (not comment in prosecced_codes) and (purse_comment(comment)):
-                    try:
-                        set_password(comment.content, comment.author_name)
-                    except Exception as e:
-                        console.log(f"Error: {e}")
-                    prosecced_codes.append(comment)
-                    if len(prosecced_codes) > 20:
-                        prosecced_codes.pop()
-            time.sleep(360)  # 360秒待機
+        # 初回タイマーをセット
+        timer = threading.Timer(300.0, main)
+        timer.start()

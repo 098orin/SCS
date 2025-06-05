@@ -14,6 +14,7 @@ elif value.project_client[gi] == "tw":
     events = cloud.events()
 
 nonces = dict() # Nonce dictionary to store nonces for each user
+clouds = dict() # Dictionary to store cloud variables
 """
 This is a dictionary to store nonces for each user.
 The key is the username and the value is a list of fixed_IV, sequense_number.
