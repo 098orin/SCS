@@ -1,6 +1,5 @@
 import sys
 
-from networkx import reverse
 import value
 import fun
 import crpt
@@ -141,7 +140,7 @@ def set_password(content,author):
     fun.write_file(path, password)
 
 def main():
-    comments = reverse(project.comments(limit=20))
+    comments = reversed(project.comments(limit=20))
     for comment in comments:
         if (not comment in prosecced_codes) and (purse_comment(comment)):
             try:
