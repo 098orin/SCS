@@ -118,14 +118,20 @@ def response(request, gi, nonces, username=None):
             # AADはヘッダ
             # nonceはnoncesから取得
             nonces[user]["client_sequence_number"] += 1
-            if nonce == None or aad == None:
+            server_nonce = nonces[user]["server_nonce_iv"] + nonces[user]["server_sequence_number"]
+            cliant_nonce = nonces[user]["client_nonce_iv"] + nonces[user]["client_sequence_number"]
+            """
+            AAD  : pad_right(sequesence_number, 4)
+            nonce: pad_right(pad_right("",sequence_number[0]) + str(nonce_iv(len=14) + sequence_number),24 ,pad_char="sequence_number[0]")
+            """
+            if cliant_nonce == None or aad == None:
                 console.log("[red]Error: nonce or aad is None[/]")
                 console.log("|mode: safe")
                 console.log(f"|request: {request}")
                 console.log(f"|user: {user}")
                 console.log("||User may not be logged in by password.")
                 return "0"
-            request = crpt.decrypt_chachapoly(key, request, nonce, aad)
+            request = crpt.decrypt_chachapoly(key, request, cliant_nonce, aad)
         
         code = request[0:3]
         req = to_txt(request[3:])
@@ -226,7 +232,7 @@ def response(request, gi, nonces, username=None):
                 passvar = crpt.decrypt_chachapoly(password, req, nonce, aad)
                 if password == passvar:
                     console.log("パスワードが一致しました。セッションを作成します。")
-                    sessionid = os.urandom(24).hex()
+                    sessionid = os.urandom(14).hex()
                     all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
                     all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
                     all_sessiontimestamp = read_file_lines(datadir + "/session/all_timestamps.txt")
@@ -235,7 +241,7 @@ def response(request, gi, nonces, username=None):
                         sessionid = all_sessionid[all_sessionuser.index(user)]
                     else:
                         while sessionid in all_sessionid:
-                            sessionid = os.urandom(24).hex()
+                            sessionid = os.urandom(14).hex()
                         all_sessionid.append(str(sessionid))
                         all_sessionuser.append(user)
                         all_sessiontimestamp.append(str(days_since_2000()))
@@ -372,8 +378,11 @@ def response(request, gi, nonces, username=None):
                     Answer = id + "/" + "-1"
         if safe:
             # 次回通信用のnonceとAADを設定しておく
-            path = datadir + "/session/all_ids.txt"
-            sessionid = read_file_lines(path)
+            nonces[user]["server_sequence_number"] += 1
+
+            # responseを暗号化
+            Answer = crpt.encrypt_chachapoly
+
         console.log(header + ", " + Answer)
         return header + to_num(Answer), nonces
 
@@ -497,7 +506,6 @@ def pad_right(text: str, total_length: int, pad_char: str = 'f') -> str:
     Returns:
         右側を指定した文字で埋めた文字列
     """
-    text = str(text)  # str型に変換
     if len(text) > total_length:
         return text[:total_length]
     else:
