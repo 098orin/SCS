@@ -1,5 +1,7 @@
 import sys
 import signal
+from datetime import datetime
+import threading
 import scratchattach as scratch3
 import value
 import fun
@@ -54,3 +56,24 @@ def sigterm_handler(signum, frame):
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 events.start()
+
+def cloud_timeout_manager():
+    """
+    This function is used to manage the cloud timeout.
+    """
+    logs = cloud.logs()
+    timeouted_vars = {}
+    for log in logs:
+        if log.type == "set":
+            if log.timestamp < datetime.utcnow()-60:
+                timeouted_vars[log.var] = 0
+    if len(timeouted_vars) > 0:
+        cloud.set_vars(timeouted_vars)
+    timer = threading.Timer(120.0, cloud_timeout_manager)
+    timer.start()  # 120秒ごとにタイムアウトを確認
+
+timer = threading.Timer(120.0, cloud_timeout_manager)
+timer.start()  # 120秒ごとにタイムアウトを確認
+print(f"{gi}: Cloud timeout manager started.")
+
+
