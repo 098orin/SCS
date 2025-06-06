@@ -122,7 +122,7 @@ def response(request, gi, nonces, username=None):
             cliant_nonce = nonces[user]["client_nonce_iv"] + nonces[user]["client_sequence_number"]
             """
             AAD  : pad_right(sequesence_number, 4)
-            nonce: str(nonces[user]["server_sequence_number"] + pad_right(nonces[user]["server_nonce_iv"]), 12)
+            nonce: str(nonces[user]["server_sequence_number"] + pad_right(nonces[user]["server_nonce_iv"]), 24)
             """
             if cliant_nonce == None or aad == None:
                 console.log("[red]Error: nonce or aad is None[/]")
@@ -131,7 +131,7 @@ def response(request, gi, nonces, username=None):
                 console.log(f"|user: {user}")
                 console.log("||User may not be logged in by password.")
                 return "0"
-            request = crpt.decrypt_chachapoly(key[0:32], request, cliant_nonce, aad)
+            request = crpt.decrypt_chachapoly(key[0:64], request, cliant_nonce, aad)
         
         code = request[0:3]
         req = to_txt(request[3:])
@@ -234,10 +234,10 @@ def response(request, gi, nonces, username=None):
                 if not file_exists(path):
                     Answer = user + "/$$-0"
                     return Answer
-                passvar = crpt.decrypt_chachapoly(password[0:32], req_args[0], nonce, aad)
+                passvar = crpt.decrypt_chachapoly(password[0:64], req_args[0], nonce, aad)
                 if password == passvar:
                     console.log("パスワードが一致しました。セッションを作成します。")
-                    sessionid = os.urandom(24).hex() #sessionid は nonce_iv
+                    sessionid = os.urandom(48).hex() #sessionid は nonce_iv
                     all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
                     all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
                     all_sessiontimestamp = read_file_lines(datadir + "/session/all_timestamps.txt")
@@ -254,9 +254,9 @@ def response(request, gi, nonces, username=None):
                         write_file(datadir + "/session/all_users.txt", all_sessionuser)
                         write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
                         nonces[user] = {
-                            "server_nonce_iv": int(str(sessionid)[0:12]),
+                            "server_nonce_iv": int(str(sessionid)[0:24]),
                             "server_sequence_number": 0,
-                            "client_nonce_iv": int(str(sessionid)[12:24]),
+                            "client_nonce_iv": int(str(sessionid)[24:48]),
                             "client_sequence_number": 0,
                         }
                     Answer = user + "/1/" + str(sessionid)
@@ -389,7 +389,7 @@ def response(request, gi, nonces, username=None):
             nonce = str(nonces[user]["server_sequence_number"] + pad_right(nonces[user]["server_nonce_iv"]), 12)
             aad = pad_right(nonces[user]["server_sequence_number"], 4)
             Answer = crpt.encrypt_chachapoly(
-                key[0:32],
+                key[0:64],
                 to_num(Answer),
                 nonce,
                 aad,

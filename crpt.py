@@ -1,6 +1,8 @@
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 from cryptography.exceptions import InvalidTag
 
+# from fun import pad_right
+
 # --- 暗号化関数 ---
 def encrypt_chachapoly(key: bytes, plaintext: bytes, nonce: bytes, aad: bytes = None) -> str:
     """
