@@ -517,6 +517,7 @@ def pad_right(text: str, total_length: int, pad_char: str = 'f') -> str:
     Returns:
         右側を指定した文字で埋めた文字列
     """
+    text = str(text)  # 確実に文字列に変換
     if len(text) > total_length:
         return text[:total_length]
     else:
