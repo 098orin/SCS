@@ -1,6 +1,6 @@
 import sys
 import signal
-from datetime import datetime
+from datetime import datetime, timedelta
 import threading
 import scratchattach as scratch3
 import value
@@ -66,7 +66,7 @@ def cloud_timeout_manager():
     timeouted_vars = {}
     for log in logs:
         if log.type == "set":
-            if log.timestamp < datetime.utcnow()-60 and log.varlue != 0:
+            if log.timestamp < datetime.utcnow()-timedelta(seconds=60) and log.varlue != 0:
                 timeouted_vars[log.var] = 0
     if len(timeouted_vars) > 0:
         cloud.set_vars(timeouted_vars)

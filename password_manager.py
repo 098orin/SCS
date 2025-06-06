@@ -150,7 +150,6 @@ def main():
             prosecced_codes.append(comment)
             if len(prosecced_codes) > 20:
                 prosecced_codes.pop()
-    time.sleep(360)  # 360秒待機
     timer = threading.Timer(300.0, main)
     timer.start()
 
