@@ -226,7 +226,7 @@ def response(request, gi, nonces, username=None):
             elif code == "110":
                 path = datadir + "/password/" + user + "_password.txt"
                 password = read_file(path)
-                aad = pad_right(len(user), 4)
+                aad = pad_right(str(len(user)), 4)
                 nonce = pad_right(days_since_2000(), 24)
                 if not file_exists(path):
                     Answer = user + "/$$-0"
@@ -394,6 +394,7 @@ def response(request, gi, nonces, username=None):
 
         console.log(header + ", " + Answer)
         return header + to_num(Answer), nonces
+    return "0", nonces
 
 
 def purse_request(request):
