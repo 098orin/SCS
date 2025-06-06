@@ -161,8 +161,8 @@ def response(request, gi, nonces, username=None):
         console.log(req)
         console.log(code)
         console.log(user)
-        correct_server_id = value.username + "_"
-        if server_id[:len(correct_server_id)+1] != correct_server_id and server_id != "all":
+        correct_server_id = value.username + "#"
+        if server_id[:len(correct_server_id)] != correct_server_id and server_id != "all":
             console.log("[red]400 Bad request[/]")
             console.log("||サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
             console.log("||project id が正しい場合、プロジェクトに不備がある可能性があります。")
@@ -414,8 +414,8 @@ def purse_request(request):
             i -= 2
         serverid = to_txt(serverid)
         user = to_txt(user)
-        correct_id = value.username + "_"
-        if serverid[:len(correct_id)+1] != correct_id:
+        correct_id = value.username + "#"
+        if serverid[:len(correct_id)] != correct_id:
             return "0", False, ""
         return str(request[0:i]), True, user
     else:
