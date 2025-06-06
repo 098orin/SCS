@@ -122,7 +122,7 @@ def response(request, gi, nonces, username=None):
             cliant_nonce = nonces[user]["client_nonce_iv"] + nonces[user]["client_sequence_number"]
             """
             AAD  : pad_right(sequesence_number, 4)
-            nonce: pad_right(pad_right("",sequence_number[0]) + str(nonce_iv(len=14) + sequence_number),24 ,pad_char="sequence_number[0]")
+            nonce: str(nonces[user]["server_sequence_number"] + pad_right(nonces[user]["server_nonce_iv"]), 12)
             """
             if cliant_nonce == None or aad == None:
                 console.log("[red]Error: nonce or aad is None[/]")
@@ -161,14 +161,16 @@ def response(request, gi, nonces, username=None):
         console.log(req)
         console.log(code)
         console.log(user)
-        if server_id != value.username and server_id != "all":
+        correct_server_id = value.username + "_"
+        if server_id[:len(correct_server_id)] != correct_server_id and server_id != "all":
             console.log("[red]400 Bad request[/]")
             console.log("||サーバー管理者の方は`value.py`に適切なproject id を設定しているか確認してください。")
             console.log("||project id が正しい場合、プロジェクトに不備がある可能性があります。")
             console.log("||プロジェクトの初期化関数をcheckしてください。")
             Answer = str(user) + to_num("/" + "-1")
             console.log(server_id)
-            return 
+            return ""
+        cliant_version = server_id[len(correct_server_id):]
         if safe:
             header = "2"
         else:
@@ -232,7 +234,7 @@ def response(request, gi, nonces, username=None):
                 passvar = crpt.decrypt_chachapoly(password, req, nonce, aad)
                 if password == passvar:
                     console.log("パスワードが一致しました。セッションを作成します。")
-                    sessionid = os.urandom(14).hex()
+                    sessionid = os.urandom(24).hex() #sessionid は nonce_iv
                     all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
                     all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
                     all_sessiontimestamp = read_file_lines(datadir + "/session/all_timestamps.txt")
@@ -241,7 +243,7 @@ def response(request, gi, nonces, username=None):
                         sessionid = all_sessionid[all_sessionuser.index(user)]
                     else:
                         while sessionid in all_sessionid:
-                            sessionid = os.urandom(14).hex()
+                            sessionid = os.urandom(24).hex()
                         all_sessionid.append(str(sessionid))
                         all_sessionuser.append(user)
                         all_sessiontimestamp.append(str(days_since_2000()))
@@ -249,12 +251,13 @@ def response(request, gi, nonces, username=None):
                         write_file(datadir + "/session/all_users.txt", all_sessionuser)
                         write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
                         nonces[user] = {
-                            "server_nonce_iv": 0,
+                            "server_nonce_iv": int(str(sessionid)[0:12]),
                             "server_sequence_number": 0,
-                            "client_nonce_iv": 0,
+                            "client_nonce_iv": int(str(sessionid)[12:24]),
                             "client_sequence_number": 0,
                         }
                     Answer = user + "/1/" + str(sessionid)
+                    header = "2" # 暗号化用にヘッダーを更新
                     safe = True
                 else:
                     console.log("パスワードが間違っています")
@@ -377,11 +380,17 @@ def response(request, gi, nonces, username=None):
                 else:
                     Answer = id + "/" + "-1"
         if safe:
-            # 次回通信用のnonceとAADを設定しておく
             nonces[user]["server_sequence_number"] += 1
-
             # responseを暗号化
-            Answer = crpt.encrypt_chachapoly
+            key = read_file_lines(datadir + "/password/" + user + "_password.txt", disp_err=False)[0]
+            nonce = str(nonces[user]["server_sequence_number"] + pad_right(nonces[user]["server_nonce_iv"]), 12)
+            aad = pad_right(nonces[user]["server_sequence_number"], 4)
+            Answer = crpt.encrypt_chachapoly(
+                key,
+                to_num(Answer),
+                nonce,
+                aad,
+            )
 
         console.log(header + ", " + Answer)
         return header + to_num(Answer), nonces
@@ -405,7 +414,8 @@ def purse_request(request):
             i -= 2
         serverid = to_txt(serverid)
         user = to_txt(user)
-        if serverid != value.username:
+        correct_id = value.username + "_"
+        if serverid[:len(correct_id)] != correct_id:
             return "0", False, ""
         return str(request[0:i]), True, user
     else:
