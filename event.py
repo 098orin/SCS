@@ -24,6 +24,7 @@ The key is the username and the value is a list of fixed_IV, sequense_number.
 
 @events.event
 def on_set(activity): #Called when a cloud var is set
+    global nonces
     if value.project_client[gi] == "sc":
         activity.load_log_data()
         print(f"{activity.username} set variable {activity.var} to {activity.value} at {activity.timestamp}")
