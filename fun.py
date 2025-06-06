@@ -161,6 +161,9 @@ def response(request, gi, nonces, username=None):
         console.log(req)
         console.log(code)
         console.log(user)
+        req_args = req.split("/")
+        req_args.pop(0)
+        req_args.pop(-1)
         correct_server_id = value.username + "#"
         if server_id[:len(correct_server_id)] != correct_server_id and server_id != "all":
             console.log("[red]400 Bad request[/]")
@@ -231,7 +234,7 @@ def response(request, gi, nonces, username=None):
                 if not file_exists(path):
                     Answer = user + "/$$-0"
                     return Answer
-                passvar = crpt.decrypt_chachapoly(password, req, nonce, aad)
+                passvar = crpt.decrypt_chachapoly(password, req_args[0], nonce, aad)
                 if password == passvar:
                     console.log("パスワードが一致しました。セッションを作成します。")
                     sessionid = os.urandom(24).hex() #sessionid は nonce_iv
