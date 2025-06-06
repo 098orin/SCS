@@ -62,7 +62,6 @@ import tools
 tools.install_if_not_exists("cryptography")
 tools.install_if_not_exists("scratchattach")
 tools.install_if_not_exists("rich")
-tools.install_if_not_exists("cachetools")
 
 path = value.path
 
