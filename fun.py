@@ -131,7 +131,7 @@ def response(request, gi, nonces, username=None):
                 console.log(f"|user: {user}")
                 console.log("||User may not be logged in by password.")
                 return "0"
-            request = crpt.decrypt_chachapoly(key, request, cliant_nonce, aad)
+            request = crpt.decrypt_chachapoly(key[0:32], request, cliant_nonce, aad)
         
         code = request[0:3]
         req = to_txt(request[3:])
@@ -234,7 +234,7 @@ def response(request, gi, nonces, username=None):
                 if not file_exists(path):
                     Answer = user + "/$$-0"
                     return Answer
-                passvar = crpt.decrypt_chachapoly(password, req_args[0], nonce, aad)
+                passvar = crpt.decrypt_chachapoly(password[0:32], req_args[0], nonce, aad)
                 if password == passvar:
                     console.log("パスワードが一致しました。セッションを作成します。")
                     sessionid = os.urandom(24).hex() #sessionid は nonce_iv
@@ -389,7 +389,7 @@ def response(request, gi, nonces, username=None):
             nonce = str(nonces[user]["server_sequence_number"] + pad_right(nonces[user]["server_nonce_iv"]), 12)
             aad = pad_right(nonces[user]["server_sequence_number"], 4)
             Answer = crpt.encrypt_chachapoly(
-                key,
+                key[0:32],
                 to_num(Answer),
                 nonce,
                 aad,
