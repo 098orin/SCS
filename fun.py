@@ -499,7 +499,7 @@ def days_since_2000(tofloat=False):
     current_date = datetime.now(timezone.utc)
     
     # 経過日数を計算
-    delta = current_date.timestamp - start_date.timestamp
+    delta = current_date.timestamp() - start_date.timestamp()
     if tofloat:
         return delta.days
     else:
