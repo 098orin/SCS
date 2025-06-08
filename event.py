@@ -24,7 +24,8 @@ def set_cloud (n,num:int, gi):
         elif value.project_client[gi] == "tw":
             msg ="SCS project server by" + value.username + " on Scratch"
             conn = scratch3.get_tw_cloud(value.project_id[gi], contact=msg)
-        conn.set_var(n,num)
+        if str(num) != "0":
+            conn.set_var(n,num)
     except Exception as error:
         print(f"{gi}:Error: {str(error)}")
 
