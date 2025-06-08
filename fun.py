@@ -450,7 +450,10 @@ def write_file(path, txt):
     try:
         with open(path, 'w') as file:
             file.write(txt)
-        console.log(f"{path} にファイルを作成")
+        if file_exists(path):
+            console.log(f"{path} にファイルを上書き")
+        else:
+            console.log(f"{path} にファイルを作成")
     except Exception as e:
         console.log(f"Error: {e}")
 
