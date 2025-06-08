@@ -19,7 +19,6 @@ def set_cloud (n,num:int, gi):
     if num == None:
         return "None"
     try:
-        conn = session.connect_cloud(value.project_id[gi])
         if value.project_client[gi] == "sc":
             conn = session.connect_cloud(value.project_id[gi])
         elif value.project_client[gi] == "tw":
