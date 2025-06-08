@@ -40,15 +40,15 @@ def on_set(activity): #Called when a cloud var is set
     global nonces
     if value.project_client[gi] == "sc":
         activity.load_log_data()
-        print(f"{activity.username} set variable {activity.var} to {activity.value} at {activity.timestamp}")
+        print(f"{gi}: {activity.username} set variable {activity.var} to {activity.value} at {activity.timestamp}")
         username = activity.username
         if activity.username == value.username:
             return # Ignore own changes
     elif value.project_client[gi] == "tw":
-        print(f"variable {activity.var} was set to {activity.value} at {activity.timestamp}")
+        print(f"{gi}: variable {activity.var} was set to {activity.value} at {activity.timestamp}")
         username = None
     response, nonces = fun.response(activity.value, gi, nonces, username=username)
-    print(f"Response: {response}")
+    print(f"{gi}: Response: {response}")
     set_cloud(activity.var, response, gi)
     # To get the user who set the variable, call activity.load_log_data() which saves the username to the activity.username attribute
 
