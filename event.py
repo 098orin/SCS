@@ -73,8 +73,8 @@ def cloud_timeout_manager():
     timer = threading.Timer(120.0, cloud_timeout_manager)
     timer.start()  # 120秒ごとにタイムアウトを確認
 
-timer = threading.Timer(120.0, cloud_timeout_manager)
-timer.start()  # 120秒ごとにタイムアウトを確認
-print(f"{gi}: Cloud timeout manager started.")
-
+if value.project_client[gi] == "sc":
+    timer = threading.Timer(120.0, cloud_timeout_manager)
+    timer.start()  # 120秒ごとにタイムアウトを確認
+    print(f"{gi}: Cloud timeout manager started.")
 

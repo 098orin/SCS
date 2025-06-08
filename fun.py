@@ -118,11 +118,12 @@ def response(request, gi, nonces, username=None):
             # AADはヘッダ
             # nonceはnoncesから取得
             nonces[user]["client_sequence_number"] += 1
-            server_nonce = nonces[user]["server_nonce_iv"] + nonces[user]["server_sequence_number"]
-            cliant_nonce = nonces[user]["client_nonce_iv"] + nonces[user]["client_sequence_number"]
+            server_nonce = pad_right(str(nonces[user]["server_sequence_number"]) + str(nonces[user]["server_nonce_iv"]), 24)
+            cliant_nonce = pad_right(str(nonces[user]["client_sequence_number"]) + str(nonces[user]["client_nonce_iv"]), 24)
+            aad = pad_right(str(nonces[user]["client_sequence_number"]), 8)
             """
-            AAD  : pad_right(sequesence_number, 4)
-            nonce: str(nonces[user]["server_sequence_number"] + pad_right(nonces[user]["server_nonce_iv"]), 24)
+            AAD  : pad_right(sequesence_number, 8)
+            nonce: pad_right(str(nonces[user]["sequence_number"]) + str(nonces[user]["nonce_iv"]), 24)
             """
             if cliant_nonce == None or aad == None:
                 console.log("[red]Error: nonce or aad is None[/]")
@@ -196,7 +197,7 @@ def response(request, gi, nonces, username=None):
                 console.log("get id")
 
                 path = datadir + "/id/" + user + ".txt"
-                id = read_file(path)
+                id = read_file_lines(path)[0]
                 if not file_exists(path):
                     Answer = user + "/-1"
                 else:
@@ -229,7 +230,7 @@ def response(request, gi, nonces, username=None):
             elif code == "110":
                 path = datadir + "/password/" + user + "_password.txt"
                 password = read_file(path)
-                aad = pad_right(str(len(user)), 4)
+                aad = pad_right(str(len(user)), 8)
                 nonce = pad_right(days_since_2000(), 24)
                 if not file_exists(path):
                     Answer = user + "/$$-0"
@@ -237,7 +238,7 @@ def response(request, gi, nonces, username=None):
                 passvar = crpt.decrypt_chachapoly(password[0:64], req_args[0], nonce, aad)
                 if password == passvar:
                     console.log("パスワードが一致しました。セッションを作成します。")
-                    sessionid = os.urandom(48).hex() #sessionid は nonce_iv
+                    sessionid = os.urandom(46).hex() #sessionid は nonce_iv
                     all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
                     all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
                     all_sessiontimestamp = read_file_lines(datadir + "/session/all_timestamps.txt")
@@ -246,7 +247,7 @@ def response(request, gi, nonces, username=None):
                         sessionid = all_sessionid[all_sessionuser.index(user)]
                     else:
                         while sessionid in all_sessionid:
-                            sessionid = os.urandom(24).hex()
+                            sessionid = os.urandom(46).hex()
                         all_sessionid.append(str(sessionid))
                         all_sessionuser.append(user)
                         all_sessiontimestamp.append(str(days_since_2000()))
@@ -254,9 +255,9 @@ def response(request, gi, nonces, username=None):
                         write_file(datadir + "/session/all_users.txt", all_sessionuser)
                         write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
                         nonces[user] = {
-                            "server_nonce_iv": int(str(sessionid)[0:24]),
+                            "server_nonce_iv": int(str(sessionid)[0:23]),
                             "server_sequence_number": 0,
-                            "client_nonce_iv": int(str(sessionid)[24:48]),
+                            "client_nonce_iv": int(str(sessionid)[23:46]),
                             "client_sequence_number": 0,
                         }
                     Answer = user + "/1/" + str(sessionid)
@@ -386,8 +387,8 @@ def response(request, gi, nonces, username=None):
             nonces[user]["server_sequence_number"] += 1
             # responseを暗号化
             key = read_file_lines(datadir + "/password/" + user + "_password.txt", disp_err=False)[0]
-            nonce = str(nonces[user]["server_sequence_number"] + pad_right(nonces[user]["server_nonce_iv"]), 12)
-            aad = pad_right(nonces[user]["server_sequence_number"], 4)
+            nonce = str(nonces[user]["server_sequence_number"] + pad_right(nonces[user]["server_nonce_iv"]), 24)
+            aad = pad_right(nonces[user]["server_sequence_number"], 8)
             Answer = crpt.encrypt_chachapoly(
                 key[0:64],
                 to_num(Answer),
