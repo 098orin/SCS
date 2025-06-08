@@ -48,7 +48,7 @@ def on_set(activity): #Called when a cloud var is set
         print(f"{gi}: variable {activity.var} was set to {activity.value} at {activity.timestamp}")
         username = None
 
-    if activity.var != "0":
+    if str(activity.var) != "0":
         response, nonces = fun.response(activity.value, gi, nonces, username=username)
         print(f"{gi}: Response: {response}")
         set_cloud(activity.var, response, gi)
