@@ -18,7 +18,7 @@ old_stdout = sys.stdout
 # キャッシュ設定
 # cache = TTLCache(maxsize=128, ttl=86400)  # 1日間有効
 
-session = scratch3.login(value.username, value.password)
+# session = scratch3.login(value.username, value.password)
 
 # datadir = os.path.expanduser ("~").replace(os.sep,'/') + "/SCS_data"
 datadir = value.datadir
@@ -426,19 +426,9 @@ def purse_request(request):
     else:
         return "0", False, ""
 
-def set_cloud (n,num:int, gi):
-    if num == None:
-        return "None"
-    try:
-        conn = session.connect_cloud(value.project_id[gi])
-        if value.project_client[gi] == "sc":
-            conn = session.connect_cloud(value.project_id[gi])
-        elif value.project_client[gi] == "tw":
-            msg ="SCS project server by" + value.username + " on Scratch"
-            conn = scratch3.get_tw_cloud(value.project_id[gi], contact=msg)
-        conn.set_var(n,num)
-    except Exception as error:
-        console.log("Error: " + str(error))
+"""
+# set_cloud関数は、event.py に移行しました。
+"""
 
 def count_files(path) -> int:
     # ディレクトリ内のファイルをカウントする

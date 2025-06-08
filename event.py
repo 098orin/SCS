@@ -6,6 +6,20 @@ import scratchattach as scratch3
 import value
 import fun
 
+def set_cloud (n,num:int, gi):
+    if num == None:
+        return "None"
+    try:
+        conn = session.connect_cloud(value.project_id[gi])
+        if value.project_client[gi] == "sc":
+            conn = session.connect_cloud(value.project_id[gi])
+        elif value.project_client[gi] == "tw":
+            msg ="SCS project server by" + value.username + " on Scratch"
+            conn = scratch3.get_tw_cloud(value.project_id[gi], contact=msg)
+        conn.set_var(n,num)
+    except Exception as error:
+        print(f"{gi}:Error: {str(error)}")
+
 gi = int(sys.argv[1])
 if value.project_client[gi] == "sc":
     session = scratch3.login(value.username, value.password) # Log in to Scratch
@@ -36,7 +50,7 @@ def on_set(activity): #Called when a cloud var is set
         username = None
     response, nonces = fun.response(activity.value, gi, nonces, username=username)
     print(f"Response: {response}")
-    fun.set_cloud(activity.var, response, gi)
+    set_cloud(activity.var, response, gi)
     # To get the user who set the variable, call activity.load_log_data() which saves the username to the activity.username attribute
 
 @events.event
