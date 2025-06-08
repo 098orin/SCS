@@ -493,17 +493,17 @@ def file_exists(path):
 
 def days_since_2000(tofloat=False):
     # 2000年1月1日午前0時0分0秒をUTCで定義
-    start_date = datetime(2000, 1, 1, 0, 0, 0)
-    
+    start_date = datetime(2000, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+
     # 現在のUTC時間を取得
     current_date = datetime.now(timezone.utc)
-    
-    # 経過日数を計算
+
     delta = current_date.timestamp() - start_date.timestamp()
+    days = delta / (60 * 60 * 24) # 経過日数を計算
     if tofloat:
-        return delta.days
+        return days
     else:
-        return int(delta.days)
+        return int(days)
 
 def pad_right(text: str, total_length: int, pad_char: str = 'f') -> str:
     """
