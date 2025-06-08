@@ -475,7 +475,7 @@ def read_file(path):
 def read_file_lines(file_path, disp_err=True):
     try:
         with open(file_path, 'r') as file:  # 'r'モードで読み込み
-            lines = file.readlines()  # 各行をリストとして読む
+            lines = [line.strip() for line in file.readlines()]  # 各行をリストとして読む
         return lines
     except FileNotFoundError:
         if disp_err:
