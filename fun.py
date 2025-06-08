@@ -10,7 +10,7 @@ import crpt
 
 # from cachetools import cached, TTLCache
 from rich.console import Console
-import scratchattach as scratch3
+# import scratchattach as scratch3
 
 console = Console()
 old_stdout = sys.stdout
@@ -77,7 +77,7 @@ def to_num(intxt):
             Answer = Answer + str(num+10)
     return Answer
 
-
+"""
 def getcloudvalues(id, i):
     if value.project_client[i] == "sc":
         request = scratch3.get_cloud(id) #Returns a dict with all cloud var values
@@ -87,6 +87,7 @@ def getcloudvalues(id, i):
         del request['time']
     
     return request
+"""
 
 """
 def response_cloudvalues (repuest, gi):
