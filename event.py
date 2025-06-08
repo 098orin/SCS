@@ -6,6 +6,15 @@ import scratchattach as scratch3
 import value
 import fun
 
+gi = int(sys.argv[1])
+if value.project_client[gi] == "sc":
+    session = scratch3.login(value.username, value.password) # Log in to Scratch
+    cloud = session.connect_scratch_cloud(value.project_id[gi]) # Connect Scratch's cloud
+    events = cloud.events()
+elif value.project_client[gi] == "tw":
+    cloud = scratch3.get_tw_cloud(value.project_id[gi])
+    events = cloud.events()
+
 def set_cloud (n,num:int, gi):
     if num == None:
         return "None"
@@ -19,15 +28,6 @@ def set_cloud (n,num:int, gi):
         conn.set_var(n,num)
     except Exception as error:
         print(f"{gi}:Error: {str(error)}")
-
-gi = int(sys.argv[1])
-if value.project_client[gi] == "sc":
-    session = scratch3.login(value.username, value.password) # Log in to Scratch
-    cloud = session.connect_scratch_cloud(value.project_id[gi]) # Connect Scratch's cloud
-    events = cloud.events()
-elif value.project_client[gi] == "tw":
-    cloud = scratch3.get_tw_cloud(value.project_id[gi])
-    events = cloud.events()
 
 nonces = dict() # Nonce dictionary to store nonces for each user
 clouds = dict() # Dictionary to store cloud variables
