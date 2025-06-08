@@ -496,7 +496,7 @@ def days_since_2000(tofloat=False):
     start_date = datetime(2000, 1, 1, 0, 0, 0)
     
     # 現在のUTC時間を取得
-    current_date = datetime.utcnow()
+    current_date = datetime.datetime.now(datetime.UTC)
     
     # 経過日数を計算
     delta = current_date - start_date
