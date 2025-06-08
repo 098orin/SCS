@@ -88,6 +88,7 @@ def getcloudvalues(id, i):
     
     return request
 
+"""
 def response_cloudvalues (repuest, gi):
     console.log(repuest)
     if repuest:
@@ -95,7 +96,8 @@ def response_cloudvalues (repuest, gi):
         for n in list(repuest):
             i += 1
             set_cloud(i, response(n, gi), gi)
-                            
+"""
+
 def response(request, gi, nonces, username=None):
     Answer = ""
     request = str(request)
