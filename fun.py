@@ -165,9 +165,6 @@ def response(request, gi, nonces, username=None):
         console.log(req)
         console.log(code)
         console.log(user)
-        req_args = req.split("/")
-        req_args.pop(0)
-        req_args.pop(-1)
         correct_server_id = value.username + "#"
         if server_id[:len(correct_server_id)] != correct_server_id and server_id != "all":
             console.log("[red]400 Bad request[/]")
@@ -177,6 +174,9 @@ def response(request, gi, nonces, username=None):
             Answer = str(user) + to_num("/" + "-1")
             console.log(server_id)
             return ""
+        req_args = req.split("/")
+        req_args.pop(0)
+        req_args.pop(-1)
         cliant_version = server_id[len(correct_server_id):]
         if safe:
             header = "2"

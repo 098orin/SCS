@@ -82,7 +82,7 @@ def cloud_timeout_manager():
     timeouted_vars = {}
     for log in logs:
         if log.type == "set":
-            if log.timestamp < int(datetime.now(timezone.utc).timestamp()-60) and log.varlue != 0:
+            if log.timestamp < int(datetime.now(timezone.utc).timestamp()-60) and str(log.varlue) != 0:
                 timeouted_vars[log.var] = 0
     if len(timeouted_vars) > 0:
         cloud.set_vars(timeouted_vars)
