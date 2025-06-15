@@ -245,6 +245,12 @@ def response(request, gi, nonces, username=None):
                     all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
                     all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
                     all_sessiontimestamp = read_file_lines(datadir + "/session/all_timestamps.txt")
+                    nonces[user] = {
+                        "server_nonce_iv": int(str(sessionid)[0:23]),
+                        "server_sequence_number": 0,
+                        "client_nonce_iv": int(str(sessionid)[23:46]),
+                        "client_sequence_number": 0,
+                    }
                     if user in all_sessionuser:
                         console.log("すでにセッションが存在しています。")
                         sessionid = all_sessionid[all_sessionuser.index(user)]
@@ -257,12 +263,6 @@ def response(request, gi, nonces, username=None):
                         write_file(datadir + "/session/all_ids.txt", all_sessionid)
                         write_file(datadir + "/session/all_users.txt", all_sessionuser)
                         write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
-                        nonces[user] = {
-                            "server_nonce_iv": int(str(sessionid)[0:23]),
-                            "server_sequence_number": 0,
-                            "client_nonce_iv": int(str(sessionid)[23:46]),
-                            "client_sequence_number": 0,
-                        }
                     Answer = user + "/1/" + str(sessionid)
                     header = "2" # 暗号化用にヘッダーを更新
                     safe = True
