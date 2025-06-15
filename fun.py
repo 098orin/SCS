@@ -239,7 +239,7 @@ def response(request, gi, nonces, username=None):
                     Answer = user + "/$$-0"
                     console.log("パスワードが設定されていません。")
                 else:
-                    passvar = crpt.decrypt_chachapoly(pad_right(password, 64), req_args[0], nonce, aad)
+                    passvar = crpt.decrypt_chachapoly(req_args[0], req_args[0], nonce, aad)
                     if password == passvar:
                         console.log("パスワードが一致しました。セッションを作成します。")
                         sessionid = os.urandom(46).hex() #sessionid は nonce_iv
