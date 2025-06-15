@@ -232,14 +232,14 @@ def response(request, gi, nonces, username=None):
 
             elif code == "110":
                 path = datadir + "/password/" + user + "_password.txt"
-                password = read_file(path)
-                aad = pad_right(str(len(user)), 8)
-                nonce = pad_right(days_since_2000(), 24)
+                password = str(read_file(path))
+                aad = pad_right(str(len(user))+password, 8)
+                nonce = pad_right(int(days_since_2000(tofloat=True)*1440), 24)
                 if not file_exists(path):
                     Answer = user + "/$$-0"
                     console.log("パスワードが設定されていません。")
                 else:
-                    passvar = crpt.decrypt_chachapoly(req_args[0], req_args[0], nonce, aad)
+                    passvar = crpt.decrypt_chachapoly(pad_right(password, 64), req_args[0], nonce, aad)
                     if password == passvar:
                         console.log("パスワードが一致しました。セッションを作成します。")
                         sessionid = os.urandom(46).hex() #sessionid は nonce_iv
