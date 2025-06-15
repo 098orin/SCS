@@ -268,6 +268,7 @@ def response(request, gi, nonces, username=None):
                     safe = True
                 else:
                     console.log("パスワードが間違っています")
+                    console.log(f"|nonces[user]: {nonces[user]}")
                     Answer = user + "/$$-1"
             elif code == "111":
                 console.log("TODO")
