@@ -270,6 +270,7 @@ def response(request, gi, nonces, username=None):
                     else:
                         console.log("パスワードが間違っています")
                         print(f"{pad_right(password, 64)}, {req_args[0]}, {nonce}, {aad}")
+                        print(f"{passvar}, {password}")
                         Answer = user + "/$$-1"
             elif code == "111":
                 console.log("TODO")
