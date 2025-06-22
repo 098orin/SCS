@@ -200,10 +200,10 @@ def response(request, gi, nonces, username=None):
                 console.log("get id")
 
                 path = datadir + "/id/" + user + ".txt"
-                id = read_file_lines(path)[0]
                 if not file_exists(path):
                     Answer = user + "/-1"
                 else:
+                    id = read_file_lines(path)[0]
                     path = datadir + "/about/" + id + "/username.txt"
                     if not file_exists(path):
                         write_file(path, user)
