@@ -241,29 +241,30 @@ def response(request, gi, nonces, username=None):
                 else:
                     passvar = crpt.decrypt_chachapoly(pad_right(password, 64), req_args[0], nonce, aad)
                     if password == passvar:
-                        console.log("パスワードが一致しました。セッションを作成します。")
+                        console.log(f"passwordが一致しました。ユーザー: {user}")
+                        # console.log("パスワードが一致しました。セッションを作成します。")
                         sessionid = os.urandom(46).hex() #sessionid は nonce_iv
-                        all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
-                        all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
-                        all_sessiontimestamp = read_file_lines(datadir + "/session/all_timestamps.txt")
+                        # all_sessionid = read_file_lines(datadir + "/session/all_ids.txt")
+                        # all_sessionuser = read_file_lines(datadir + "/session/all_users.txt")
+                        # all_sessiontimestamp = read_file_lines(datadir + "/session/all_timestamps.txt")
                         nonces[user] = {
-                            "server_nonce_iv": int(str(sessionid)[0:23]),
+                            "server_nonce_iv": str(sessionid)[0:23],
                             "server_sequence_number": 0,
-                            "client_nonce_iv": int(str(sessionid)[23:46]),
+                            "client_nonce_iv": str(sessionid)[23:46],
                             "client_sequence_number": 0,
                         }
-                        if user in all_sessionuser:
-                            console.log("すでにセッションが存在しています。")
-                            sessionid = all_sessionid[all_sessionuser.index(user)]
-                        else:
-                            while sessionid in all_sessionid:
-                                sessionid = os.urandom(46).hex()
-                            all_sessionid.append(str(sessionid))
-                            all_sessionuser.append(user)
-                            all_sessiontimestamp.append(str(days_since_2000()))
-                            write_file(datadir + "/session/all_ids.txt", all_sessionid)
-                            write_file(datadir + "/session/all_users.txt", all_sessionuser)
-                            write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
+                        #if user in all_sessionuser:
+                        #    console.log("すでにセッションが存在しています。")
+                        #    sessionid = all_sessionid[all_sessionuser.index(user)]
+                        #else:
+                        #    while sessionid in all_sessionid:
+                        #        sessionid = os.urandom(46).hex()
+                        #    all_sessionid.append(str(sessionid))
+                        #    all_sessionuser.append(user)
+                        #    all_sessiontimestamp.append(str(days_since_2000()))
+                        #    write_file(datadir + "/session/all_ids.txt", all_sessionid)
+                        #    write_file(datadir + "/session/all_users.txt", all_sessionuser)
+                        #    write_file(datadir + "/session/all_timestamps.txt", all_sessiontimestamp)
                         Answer = user + "/1/" + str(sessionid)
                         header = "2" # 暗号化用にヘッダーを更新
                         safe = True
