@@ -393,8 +393,8 @@ def response(request, gi, nonces, username=None):
         if safe:
             nonces[user]["server_sequence_number"] += 1
             # responseを暗号化
-            key = read_file_lines(datadir + "/password/" + user + "_password.txt", disp_err=False)[0]
-            nonce = str(nonces[user]["server_sequence_number"] + pad_right(nonces[user]["server_nonce_iv"]), 24)
+            key = pad_right(read_file_lines(datadir + "/password/" + user + "_password.txt", disp_err=False)[0], 64)
+            nonce = str(nonces[user]["server_sequence_number"] + pad_right((nonces[user]["server_nonce_iv"]), 24))
             aad = pad_right(nonces[user]["server_sequence_number"], 8)
             Answer = crpt.encrypt_chachapoly(
                 pad_right(key, 64),
