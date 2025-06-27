@@ -20,7 +20,7 @@ def encrypt_chachapoly(key: bytes, plaintext: bytes, nonce: bytes, aad: bytes = 
         # Byteでなかったら変換
     if isinstance(key, bytes):
         key = bytes.fromhex(key)
-    if isinstance(ciphertext, bytes):
+    if isinstance(plaintext, bytes):
         plaintext = bytes.fromhex(plaintext)
     if isinstance(nonce, bytes):
         nonce = bytes.fromhex(nonce)
