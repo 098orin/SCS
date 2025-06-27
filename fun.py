@@ -233,7 +233,7 @@ def response(request, gi, nonces, username=None):
             elif code == "110":
                 path = datadir + "/password/" + user + "_password.txt"
                 password = str(read_file(path))
-                aad = pad_right(str(len(user))+password, 8)
+                aad = pad_right(str(len(to_num(user)))+password, 8)
                 nonce = pad_right(int(days_since_2000(tofloat=True)*1440), 24)
                 if not file_exists(path):
                     Answer = user + "/$$-0"
