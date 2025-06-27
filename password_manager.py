@@ -130,7 +130,6 @@ def set_password(content,author):
         console.log("password file already exists")
         console.log("change password")
     exchange_key = exchange_keys(value.private_key, user_public_key)
-    print(exchange_key.hex())
     password = crpt.decrypt_chachapoly(
                                 fun.pad_right(exchange_key.hex(), 64),
                                 encrypted_password,
@@ -138,6 +137,7 @@ def set_password(content,author):
                                 fun.pad_right(exchange_key.hex(), 8)
                             )
     fun.write_file(path, password)
+    print(password)
 
 def main():
     comments = reversed(project.comments(limit=20))
