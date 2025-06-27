@@ -140,6 +140,7 @@ def set_password(content,author):
     print(password)
 
 def main():
+    global prosecced_codes
     comments = reversed(project.comments(limit=20))
     for comment in comments:
         if (not comment in prosecced_codes) and (purse_comment(comment)):
