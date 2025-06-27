@@ -160,6 +160,8 @@ if __name__ == "__main__":
         print(f"秘密鍵：{private_key}")
         print(f"公開鍵：{public_key}")
         print("README.md を参照して、適切に処理してください。")
+    elif arg == "debug":
+        main()
     else:
         # 初回タイマーをセット
         timer = threading.Timer(300.0, main)
