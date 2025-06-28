@@ -18,13 +18,13 @@ def encrypt_chachapoly(key: bytes, plaintext: bytes, nonce: bytes, aad: bytes = 
         ciphertext: 暗号化されたデータと認証タグ (バイト列)
     """
         # Byteでなかったら変換
-    if isinstance(key, bytes):
+    if isinstance(key, str):
         key = bytes.fromhex(key)
-    if isinstance(plaintext, bytes):
+    if isinstance(plaintext, str):
         plaintext = bytes.fromhex(plaintext)
-    if isinstance(nonce, bytes):
+    if isinstance(nonce, str):
         nonce = bytes.fromhex(nonce)
-    if isinstance(aad, bytes):
+    if isinstance(aad, str):
         aad = bytes.fromhex(aad)
 
     # ChaCha20Poly1305 オブジェクトを作成し、キーを渡す
