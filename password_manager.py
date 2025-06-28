@@ -143,7 +143,7 @@ def main():
     global prosecced_codes
     comments = reversed(project.comments(limit=20))
     for comment in comments:
-        if (not comment in prosecced_codes) and (purse_comment(comment)):
+        if comment not in prosecced_codes and purse_comment(comment):
             try:
                 set_password(comment.content, comment.author_name)
             except Exception as e:
