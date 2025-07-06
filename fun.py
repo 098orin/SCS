@@ -113,7 +113,7 @@ def response(request, gi, nonces, username=None):
                 console.log(f"|request: {request}")
                 return "0"
             path = datadir + "/password/" + user + "_password.txt"
-            key = read_file_lines(path, disp_err=False)[0]
+            key = read_file_lines(path, disp_err=True)[0]
             if not file_exists(path):
                 console.log("[red]Error: password file not found[/]")
                 console.log("|mode: safe")
