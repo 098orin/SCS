@@ -396,6 +396,7 @@ def response(request, gi, nonces, username=None):
             key = pad_right(read_file_lines(datadir + "/password/" + user + "_password.txt", disp_err=False)[0], 64)
             nonce = pad_right(str(nonces[user]["server_sequence_number"]) + nonces[user]["server_nonce_iv"], 24)
             aad = pad_right(nonces[user]["server_sequence_number"], 8)
+            console.log(f"Encrypting key: {key}, nonce: {nonce}, aad: {aad}")
             Answer = crpt.encrypt_chachapoly(
                 pad_right(key, 64),
                 to_num(Answer),
