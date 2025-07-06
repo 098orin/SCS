@@ -268,6 +268,7 @@ def response(request, gi, nonces, username=None):
                         Answer = user + "/1/" + str(sessionid)
                         header = "2" # 暗号化用にヘッダーを更新
                         safe = True
+                        special_flag = True
                     else:
                         console.log("パスワードが間違っています")
                         print(f"{pad_right(password, 64)}, {req_args[0]}, {nonce}, {aad}")
@@ -394,7 +395,10 @@ def response(request, gi, nonces, username=None):
             nonces[user]["server_sequence_number"] += 1
             # responseを暗号化
             key = pad_right(read_file_lines(datadir + "/password/" + user + "_password.txt", disp_err=False)[0], 64)
-            nonce = pad_right(str(nonces[user]["server_sequence_number"]) + nonces[user]["server_nonce_iv"], 24)
+            if special_flag:
+                nonce = pad_right(nonces[user]["server_sequence_number"], 24)
+            else:
+                nonce = pad_right(str(nonces[user]["server_sequence_number"]) + nonces[user]["server_nonce_iv"], 24)
             aad = pad_right(nonces[user]["server_sequence_number"], 8)
             console.log(f"Encrypting key: {key}, nonce: {nonce}, aad: {aad}")
             Answer = crpt.encrypt_chachapoly(
