@@ -494,11 +494,11 @@ def read_file_lines(file_path, disp_err=True):
     except FileNotFoundError:
         if disp_err:
             console.log(f"{file_path} は見つかりませんでした。")
-        return []
+        return ["",]
     except Exception as e:
         if disp_err:
             console.log(f"エラーが発生しました: {e}")
-        return []
+        return ["",]
 
 def file_exists(path):
   return os.path.exists(path)
