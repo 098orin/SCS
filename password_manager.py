@@ -139,8 +139,7 @@ def set_password(content,author):
     fun.write_file(path, password)
     print(password)
 
-def main():
-    global prosecced_codes
+def main(prosecced_codes):
     comments = reversed(project.comments(limit=20))
     for comment in comments:
         if comment not in prosecced_codes and purse_comment(comment):
@@ -151,7 +150,7 @@ def main():
             prosecced_codes.append(comment)
             if len(prosecced_codes) > 20:
                 prosecced_codes.pop()
-    timer = threading.Timer(300.0, main)
+    timer = threading.Timer(300.0, main, args=[prosecced_codes])
     timer.start()
 
 if __name__ == "__main__":
@@ -165,5 +164,5 @@ if __name__ == "__main__":
         main()
     else:
         # 初回タイマーをセット
-        timer = threading.Timer(300.0, main)
+        timer = threading.Timer(300.0, main, args=[list()])
         timer.start()
