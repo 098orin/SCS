@@ -1,4 +1,6 @@
 version v.2.0 - β.2.1
+# 注意
+* 現在のSCSの最新バージョンは https://github.com/098orin/SCS/tree/v.2.0-%E6%AD%A3%E5%BC%8F%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E7%94%A8 で開発がされています。このバージョンよりも安定していますので、そちらをお使いください。1.x安定板の最終コミットは https://github.com/098orin/SCS/commit/5ba269b2e871782a06b8b7aa5afaa72ead39c308 です。
 # SCS (Sratch Cloud System)
 これはscratch projectと外部での通信を可能にするためのサーバープログラムです。
 
