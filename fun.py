@@ -111,14 +111,14 @@ def response(request, gi, nonces, username=None):
                 console.log("[red]Error: user is empty[/]")
                 console.log("|mode: safe")
                 console.log(f"|request: {request}")
-                return "0"
+                return "0", nonces
             path = datadir + "/password/" + user + "_password.txt"
             key = read_file_lines(path, disp_err=True)[0]
             if not file_exists(path):
                 console.log("[red]Error: password file not found[/]")
                 console.log("|mode: safe")
                 console.log(f"|request: {request}")
-                return "0"
+                return "0", nonces
             # AADはヘッダ
             # nonceはnoncesから取得
             nonces[user]["client_sequence_number"] += 1
@@ -135,7 +135,7 @@ def response(request, gi, nonces, username=None):
                 console.log(f"|request: {request}")
                 console.log(f"|user: {user}")
                 console.log("||User may not be logged in by password.")
-                return "0"
+                return "0", nonces
             request = crpt.decrypt_chachapoly(pad_right(key, 64), request, cliant_nonce, aad)
         
         code = request[0:3]
