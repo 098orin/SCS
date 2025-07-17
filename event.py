@@ -107,6 +107,7 @@ if value.project_client[gi] == "sc":
     timer = threading.Timer(120.0, sc_cloud_timeout_manager)
     timer.start()
     print(f"{gi}: Scatch Cloud timeout manager started.")
+"""
 elif value.project_client[gi] == "tw":
     timestamped_vars = dict()  # Dictionary to store timestamped variables
     vars = cloud.get_all_vars()
@@ -114,4 +115,4 @@ elif value.project_client[gi] == "tw":
         timestamped_vars[var_name] = int(0)
     timer = threading.Timer(120.0, tw_cloud_timeout_manager, args=[timestamped_vars])
     print(f"{gi}: Scatch Cloud timeout manager started.")
-
+"""
