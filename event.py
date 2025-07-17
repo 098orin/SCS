@@ -2,6 +2,7 @@ import sys
 import signal
 from datetime import datetime, timezone
 import threading
+import time
 import scratchattach as scratch3
 import value
 import fun
@@ -76,7 +77,7 @@ events.start()
 
 def sc_cloud_timeout_manager():
     """
-    This function is used to manage the cloud timeout.
+    This function is used to manage the sc cloud timeout.
     """
     logs = cloud.logs()
     timeouted_vars = {}
@@ -89,8 +90,28 @@ def sc_cloud_timeout_manager():
     timer = threading.Timer(120.0, sc_cloud_timeout_manager)
     timer.start()  # 120秒ごとにタイムアウトを確認
 
+def tw_cloud_timeout_manager(tsed_vars):
+    """
+    This function is used to manage the tw cloud timeout.
+    """
+    timeouted_vars = {}
+    for var_name in tsed_vars:
+        if tsed_vars[var_name] < int(datetime.now(timezone.utc).timestamp()-60):
+            timeouted_vars[var_name] = 0
+    if len(timeouted_vars) > 0:
+        cloud.set_vars(timeouted_vars)
+    timer = threading.Timer(120.0, tw_cloud_timeout_manager)
+    timer.start()  # 120秒ごとにタイムアウトを確認
+
 if value.project_client[gi] == "sc":
     timer = threading.Timer(120.0, sc_cloud_timeout_manager)
-    timer.start()  # 120秒ごとにタイムアウトを確認
+    timer.start()
+    print(f"{gi}: Scatch Cloud timeout manager started.")
+elif value.project_client[gi] == "tw":
+    timestamped_vars = dict()  # Dictionary to store timestamped variables
+    vars = cloud.get_all_vars()
+    for var_name in vars:
+        timestamped_vars[var_name] = int(0)
+    timer = threading.Timer(120.0, tw_cloud_timeout_manager, args=[timestamped_vars])
     print(f"{gi}: Scatch Cloud timeout manager started.")
 
