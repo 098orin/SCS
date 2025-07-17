@@ -74,7 +74,7 @@ def sigterm_handler(signum, frame):
 signal.signal(signal.SIGTERM, sigterm_handler)
 events.start()
 
-def cloud_timeout_manager():
+def sc_cloud_timeout_manager():
     """
     This function is used to manage the cloud timeout.
     """
@@ -86,11 +86,11 @@ def cloud_timeout_manager():
                 timeouted_vars[log.var] = 0
     if len(timeouted_vars) > 0:
         cloud.set_vars(timeouted_vars)
-    timer = threading.Timer(120.0, cloud_timeout_manager)
+    timer = threading.Timer(120.0, sc_cloud_timeout_manager)
     timer.start()  # 120秒ごとにタイムアウトを確認
 
 if value.project_client[gi] == "sc":
-    timer = threading.Timer(120.0, cloud_timeout_manager)
+    timer = threading.Timer(120.0, sc_cloud_timeout_manager)
     timer.start()  # 120秒ごとにタイムアウトを確認
-    print(f"{gi}: Cloud timeout manager started.")
+    print(f"{gi}: Scatch Cloud timeout manager started.")
 
